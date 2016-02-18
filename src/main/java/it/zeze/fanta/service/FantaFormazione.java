@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 public class FantaFormazione {
 
-	@PersistenceContext(name = "FantaFormazioneWebService")
+	@PersistenceContext(unitName = "FantaFormazioneService")
 	EntityManager em;
 
 	@GET
