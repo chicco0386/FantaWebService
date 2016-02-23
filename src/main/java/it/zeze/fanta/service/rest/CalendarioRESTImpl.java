@@ -10,9 +10,11 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.htmlcleaner.TagNode;
 
 import it.zeze.fanta.service.definition.CalendarioInterface;
 import it.zeze.fanta.service.definition.ejb.CalendarioLocal;
+import it.zeze.fantaformazioneweb.entity.Calendario;
 import it.zeze.fantaformazioneweb.entity.Giornate;
 
 @Path("/calendarioRESTImpl")
@@ -40,6 +42,30 @@ public class CalendarioRESTImpl implements CalendarioInterface {
 	public Giornate getGiornate() {
 		logger.info("getGiornate - CALLED");
 		return calendarioEJB.getGiornate();
+	}
+
+	@Override
+	public void unmarshallAndSaveFromNodeCalendario(int idGiornata, TagNode calendarNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Calendario getCalendarioByIdGiornataIdSquadra(int idGiornata, int idSquadra) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getNomeSquadraAvversaria(int idGiornata, int idSquadra) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isSquadraFuoriCasa(int idGiornata, int idSquadra) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

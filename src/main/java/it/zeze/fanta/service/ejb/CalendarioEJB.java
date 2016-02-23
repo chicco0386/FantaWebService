@@ -7,10 +7,12 @@ import javax.persistence.PersistenceContext;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.htmlcleaner.TagNode;
 
 import it.zeze.fanta.service.definition.ejb.CalendarioLocal;
 import it.zeze.fanta.service.definition.ejb.CalendarioRemote;
 import it.zeze.fanta.service.rest.CalendarioRESTImpl;
+import it.zeze.fantaformazioneweb.entity.Calendario;
 import it.zeze.fantaformazioneweb.entity.Giornate;
 
 @Stateless
@@ -30,6 +32,30 @@ public class CalendarioEJB implements CalendarioLocal, CalendarioRemote{
 	@Override
 	public Giornate getGiornate() {
 		return (Giornate) em.createQuery("SELECT g FROM Giornate g").getResultList().get(0);
+	}
+
+	@Override
+	public void unmarshallAndSaveFromNodeCalendario(int idGiornata, TagNode calendarNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Calendario getCalendarioByIdGiornataIdSquadra(int idGiornata, int idSquadra) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getNomeSquadraAvversaria(int idGiornata, int idSquadra) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isSquadraFuoriCasa(int idGiornata, int idSquadra) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
