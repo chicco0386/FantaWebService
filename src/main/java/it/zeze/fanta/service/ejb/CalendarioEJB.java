@@ -15,6 +15,7 @@ import org.htmlcleaner.XPatherException;
 import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.CalendarioLocal;
 import it.zeze.fanta.service.definition.ejb.CalendarioRemote;
+import it.zeze.fanta.service.definition.ejb.GiornateLocal;
 import it.zeze.fanta.service.definition.ejb.SquadreLocal;
 import it.zeze.fanta.service.rest.CalendarioRESTImpl;
 import it.zeze.fantaformazioneweb.entity.Calendario;
@@ -26,17 +27,21 @@ import it.zeze.html.cleaner.HtmlCleanerUtil;
 @LocalBean
 public class CalendarioEJB implements CalendarioLocal, CalendarioRemote{
 	
-	private static final Logger log = LogManager.getLogger(CalendarioRESTImpl.class);
+	private static final Logger log = LogManager.getLogger(CalendarioEJB.class);
 	
 	@EJB(name = "DBManager")
 	private DBManager dbManager;
 	
 	@EJB(name="SquadreEJB")
 	private SquadreLocal squadreEJB;
+	
+	@EJB(name="GiornateEJB")
+	private GiornateLocal giornateEJB;
 
 	@Override
 	public void inizializzaCalendario() {
-		log.info("inizializzaCalendario - CALLED 1");
+		squadreEJB.unmarshallAndSaveFromHtmlFile();
+		giornateEJB.unmarshallAndSaveFromHtmlFile();
 	}
 
 	@Override
@@ -70,9 +75,9 @@ public class CalendarioEJB implements CalendarioLocal, CalendarioRemote{
 				}
 			}
 		} catch (IOException e) {
-			log.error(e, e);
+			log.error(e);
 		} catch (XPatherException e) {
-			log.error(e, e);
+			log.error(e);
 		}
 		log.info("unmarshallAndSaveFromHtmlFile, uscito");
 		

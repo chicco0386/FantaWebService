@@ -8,6 +8,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -29,8 +31,14 @@ import it.zeze.util.DateUtil;
 @Stateless
 @LocalBean
 public class GiornateEJB implements GiornateLocal, GiornateRemote {
+	
+	private static final String SELECT_BY_NUMERO_GIORNATA_STAGIONE = "SELECT g.id FROM Giornate g WHERE g.numeroGiornata = :numeroGiornata AND g.stagione = :stagione";
+	private static final String SELECT_BY_DATA = "SELECT g.id FROM Giornate g WHERE g.data = :data";
+	private static final String SELECT_BY_ID = "SELECT g FROM Giornate g WHERE g.id = :idGiornata";
+	private static final String ORDER_BY_ID = "SELECT g FROM Giornate g ORDER BY g.id DESC";
+	private static final String SELECT_BY_STAGIONE = "SELECT g FROM Giornate g WHERE g.stagione = :stagione ORDER BY g.id DESC";
 
-	private static final Logger log = LogManager.getLogger(CalendarioRESTImpl.class);
+	private static final Logger log = LogManager.getLogger(GiornateEJB.class);
 
 	@EJB(name = "CalendarioEJB")
 	private CalendarioLocal calendarioEJB;
@@ -72,11 +80,11 @@ public class GiornateEJB implements GiornateLocal, GiornateRemote {
 				calendarioEJB.unmarshallAndSaveFromNodeCalendario(currentIdGiornata, currentNodeGiornata);
 			}
 		} catch (IOException e) {
-			log.error(e, e);
+			log.error(e);
 		} catch (XPatherException e) {
-			log.error(e, e);
+			log.error(e);
 		} catch (ParseException e) {
-			log.error(e, e);
+			log.error(e);
 		}
 		log.info("unmarshallAndSaveFromHtmlFile, uscito");
 	}
@@ -89,8 +97,16 @@ public class GiornateEJB implements GiornateLocal, GiornateRemote {
 
 	@Override
 	public int getIdGiornata(int numeroGiornata, String stagione) {
-		// TODO Auto-generated method stub
-		return 0;
+		int idGiornata = -1;
+		Query query = dbManager.getEm().createQuery(SELECT_BY_NUMERO_GIORNATA_STAGIONE);
+		query.setParameter("numeroGiornata", numeroGiornata);
+		query.setParameter("stagione", stagione);
+		try {
+			idGiornata = (Integer) query.getSingleResult();
+		} catch (NoResultException e) {
+			log.error("Nessun risultato tovato con numeroGiornata [" + numeroGiornata + "] e stagione [" + stagione + "]");
+		}
+		return idGiornata;
 	}
 
 	@Override

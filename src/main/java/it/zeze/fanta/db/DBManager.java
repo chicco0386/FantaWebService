@@ -30,7 +30,7 @@ public class DBManager {
 	
 	public Giornate getGiornate(int numeroGiornata, String stagione){
 		Giornate toReturn = null;
-		String qryString = "SELECT g FROM Giornate g WHERE g.numeroGiornata = :numeroGiornata AND g.stagine = :stagione";
+		String qryString = "SELECT g FROM Giornate g WHERE g.numeroGiornata = :numeroGiornata AND g.stagione = :stagione";
 		Query query = em.createQuery(qryString);
 		query.setParameter("numeroGiornata", numeroGiornata);
 		query.setParameter("stagione", stagione);
