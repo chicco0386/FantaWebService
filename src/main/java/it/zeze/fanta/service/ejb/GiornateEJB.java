@@ -2,13 +2,12 @@ package it.zeze.fanta.service.ejb;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -16,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 
+import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.CalendarioLocal;
 import it.zeze.fanta.service.definition.ejb.GiornateLocal;
 import it.zeze.fanta.service.definition.ejb.GiornateRemote;
@@ -24,18 +24,19 @@ import it.zeze.fantaformazioneweb.entity.Giornate;
 import it.zeze.html.cleaner.HtmlCleanerUtil;
 import it.zeze.util.ConfigurationUtil;
 import it.zeze.util.Constants;
+import it.zeze.util.DateUtil;
 
 @Stateless
 @LocalBean
 public class GiornateEJB implements GiornateLocal, GiornateRemote {
-	
+
 	private static final Logger log = LogManager.getLogger(CalendarioRESTImpl.class);
-	
+
 	@EJB(name = "CalendarioEJB")
 	private CalendarioLocal calendarioEJB;
-	
-	@PersistenceContext(unitName = "FantaFormazioneService")
-	EntityManager em;
+
+	@EJB(name = "DBManager")
+	private DBManager dbManager;
 
 	@Override
 	public void unmarshallAndSaveFromHtmlFile() {
@@ -71,14 +72,11 @@ public class GiornateEJB implements GiornateLocal, GiornateRemote {
 				calendarioEJB.unmarshallAndSaveFromNodeCalendario(currentIdGiornata, currentNodeGiornata);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e, e);
 		} catch (XPatherException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e, e);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e, e);
 		}
 		log.info("unmarshallAndSaveFromHtmlFile, uscito");
 	}
@@ -124,28 +122,29 @@ public class GiornateEJB implements GiornateLocal, GiornateRemote {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	private int salvaGiornate(TagNode calendarNode, int numeroGiornata, String nomeStagione) throws IOException, XPatherException, ParseException {
 		int idGiornataInseritoToReturn = -1;
-//		String divisoreData = "/";
-//		String patternData = "dd" + divisoreData + "MM" + divisoreData + "yyyy";
-//		List<TagNode> listNodeGiornate = HtmlCleanerUtil.getListOfElementsByXPathFromElement(calendarNode, "/thead/tr/th/h3[@class='ra']");
-//		String currentStringGiornata;
-//		int indexOf;
-//		String currentStringData;
-//		Date currentDateParsed;
-//		for (int i = 0; i < listNodeGiornate.size(); i++) {
-//			currentStringGiornata = listNodeGiornate.get(i).getText().toString();
-//			indexOf = StringUtils.indexOf(currentStringGiornata, divisoreData);
-//			currentStringData = StringUtils.substring(currentStringGiornata, indexOf - 2, indexOf + (patternData.length() - 2));
-//			currentDateParsed = DateUtil.getDateWithPatternFromString(currentStringData, patternData);
-//			giornateHome.clearInstance();
-//			giornateHome.getInstance().setNumeroGiornata(numeroGiornata);
-//			giornateHome.getInstance().setStagione(nomeStagione);
-//			giornateHome.getInstance().setData(currentDateParsed);
-//			giornateHome.persist();
-//			idGiornataInseritoToReturn = giornateHome.getInstance().getId();
-//		}
+		String divisoreData = "/";
+		String patternData = "dd" + divisoreData + "MM" + divisoreData + "yyyy";
+		List<TagNode> listNodeGiornate = HtmlCleanerUtil.getListOfElementsByXPathFromElement(calendarNode, "/thead/tr/th/h3[@class='ra']");
+		String currentStringGiornata;
+		int indexOf;
+		String currentStringData;
+		Date currentDateParsed;
+		for (int i = 0; i < listNodeGiornate.size(); i++) {
+			currentStringGiornata = listNodeGiornate.get(i).getText().toString();
+			indexOf = StringUtils.indexOf(currentStringGiornata, divisoreData);
+			currentStringData = StringUtils.substring(currentStringGiornata, indexOf - 2, indexOf + (patternData.length() - 2));
+			currentDateParsed = DateUtil.getDateWithPatternFromString(currentStringData, patternData);
+			Giornate toInsert = new Giornate();
+			toInsert.setNumeroGiornata(numeroGiornata);
+			toInsert.setStagione(nomeStagione);
+			toInsert.setData(currentDateParsed);
+			dbManager.persist(toInsert);
+			toInsert = dbManager.getGiornate(numeroGiornata, nomeStagione);
+			idGiornataInseritoToReturn = toInsert.getId();
+		}
 		return idGiornataInseritoToReturn;
 	}
 }
