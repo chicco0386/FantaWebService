@@ -62,7 +62,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		// Per tutte le giornate presenti su DB controllo se esiste il relativo
 		// file e lo elaboro
 		String pathCompletoFileSquadre;
-		List<Giornate> listaGiornate = dbManager.getGiornateAll();
+		List<Giornate> listaGiornate = giornateEJB.getGiornateAll();
 		Giornate currentGiornata;
 		File currentFileGiornata;
 		for (int i = 0; i < listaGiornate.size(); i++) {

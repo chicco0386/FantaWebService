@@ -1,6 +1,7 @@
 package it.zeze.fanta.service.ejb;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -80,7 +81,7 @@ public class SquadreEJB implements SquadreLocal, SquadreRemote {
 	@Override
 	public void initMappaSquadre() {
 		mapSquadre.clear();
-		List<Squadre> result = dbManager.getSquadreAll();
+		List<Squadre> result = getSquadreAll();
 		for (int i = 0; i < result.size(); i++) {
 			mapSquadre.put(result.get(i).getId(), result.get(i).getNome());
 		}
@@ -130,12 +131,13 @@ public class SquadreEJB implements SquadreLocal, SquadreRemote {
 			return null;
 		}
 	}
-
-	@Override
-	public List<Squadre> getSquadre() {
-		return null;
-		// TODO Auto-generated method stub
-
+	
+	public List<Squadre> getSquadreAll(){
+		List<Squadre> toReturn = new ArrayList<Squadre>();
+		String qryString = "SELECT s FROM Squadre s";
+		Query query = dbManager.getEm().createQuery(qryString);
+		toReturn = query.getResultList();
+		return toReturn;
 	}
 
 }

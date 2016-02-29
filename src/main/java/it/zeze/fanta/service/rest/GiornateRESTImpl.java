@@ -77,6 +77,12 @@ public class GiornateRESTImpl implements GiornateInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<Giornate> getGiornateAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 

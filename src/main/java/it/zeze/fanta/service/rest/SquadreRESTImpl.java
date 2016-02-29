@@ -61,13 +61,5 @@ public class SquadreRESTImpl implements SquadreInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	@Override
-	@GET
-	@Path("getSquadre")
-	public List<Squadre> getSquadre(){
-		logger.info("getSquadre CALLED");
-		return dbManager.getSquadreAll();
-	}
 
 }

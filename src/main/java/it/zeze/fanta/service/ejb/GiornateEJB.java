@@ -2,6 +2,7 @@ package it.zeze.fanta.service.ejb;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,6 @@ import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.CalendarioLocal;
 import it.zeze.fanta.service.definition.ejb.GiornateLocal;
 import it.zeze.fanta.service.definition.ejb.GiornateRemote;
-import it.zeze.fanta.service.rest.CalendarioRESTImpl;
 import it.zeze.fantaformazioneweb.entity.Giornate;
 import it.zeze.html.cleaner.HtmlCleanerUtil;
 import it.zeze.util.ConfigurationUtil;
@@ -176,9 +176,27 @@ public class GiornateEJB implements GiornateLocal, GiornateRemote {
 			toInsert.setStagione(nomeStagione);
 			toInsert.setData(currentDateParsed);
 			dbManager.persist(toInsert);
-			toInsert = dbManager.getGiornate(numeroGiornata, nomeStagione);
+			toInsert = getGiornate(numeroGiornata, nomeStagione);
 			idGiornataInseritoToReturn = toInsert.getId();
 		}
 		return idGiornataInseritoToReturn;
+	}
+	
+	public Giornate getGiornate(int numeroGiornata, String stagione){
+		Giornate toReturn = null;
+		String qryString = "SELECT g FROM Giornate g WHERE g.numeroGiornata = :numeroGiornata AND g.stagione = :stagione";
+		Query query = dbManager.getEm().createQuery(qryString);
+		query.setParameter("numeroGiornata", numeroGiornata);
+		query.setParameter("stagione", stagione);
+		toReturn = (Giornate) query.getSingleResult();
+		return toReturn;
+	}
+	
+	public List<Giornate> getGiornateAll(){
+		List<Giornate> toReturn = new ArrayList<Giornate>();
+		String qryString = "SELECT g FROM Giornate g";
+		Query query = dbManager.getEm().createQuery(qryString);
+		toReturn = (List<Giornate>) query.getResultList();
+		return toReturn;
 	}
 }
