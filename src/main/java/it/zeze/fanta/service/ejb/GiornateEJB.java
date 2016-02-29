@@ -91,8 +91,17 @@ public class GiornateEJB implements GiornateLocal, GiornateRemote {
 
 	@Override
 	public String getStagione(String stagioneInput) {
-		// TODO Auto-generated method stub
-		return null;
+		String toReturn = stagioneInput;
+		if (stagioneInput.length() > 7) {
+			String temp = stagioneInput;
+			temp = StringUtils.deleteWhitespace(stagioneInput);
+			String toReplace = StringUtils.substringAfterLast(temp, "/");
+			if (toReplace.length() > 2) {
+				temp = StringUtils.substring(toReplace, 2);
+			}
+			toReturn = StringUtils.replace(toReturn, toReplace, temp);
+		}
+		return toReturn;
 	}
 
 	@Override
@@ -129,8 +138,17 @@ public class GiornateEJB implements GiornateLocal, GiornateRemote {
 
 	@Override
 	public Giornate getLastGiornata() {
-		// TODO Auto-generated method stub
-		return null;
+		Giornate toReturn = null;
+		Query query = dbManager.getEm().createQuery(ORDER_BY_ID);
+		try {
+			List<Giornate> resultList = (List<Giornate>) query.getResultList();
+			if (resultList != null && !resultList.isEmpty()) {
+				toReturn = resultList.get(0);
+			}
+		} catch (NoResultException e) {
+			log.error("Nessun risultato tovato per giornate");
+		}
+		return toReturn;
 	}
 
 	@Override

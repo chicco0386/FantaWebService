@@ -241,6 +241,56 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		}
 		return idGiocatore;
 	}
+	
+	@Override
+	public void insertOrUpdateGiocatore(String nomeSquadra, String nomeGiocatore, String ruolo, String stagione, boolean noLike) {
+		/*
+		 * Se il giocatore lo trovo gi� con la select per squadra,nome,ruolo
+		 * allora nn faccio niente
+		 */
+		// Prima cerco solo nome giocatore e squadra
+		Giocatori existingGiocatore = getGiocatoreByNomeSquadra(nomeGiocatore, nomeSquadra, stagione, noLike);
+		if (existingGiocatore == null) {
+			existingGiocatore = getGiocatoreByNomeSquadraRuolo(nomeGiocatore, nomeSquadra, ruolo, stagione, noLike);
+			if (existingGiocatore == null) {
+				/*
+				 * Se non ho trovato il giocatore con quella select allora lo
+				 * cerco per nome e ruolo, perch� potrebbe aver cambiato
+				 * squadra, cos� aggiorno la squadra
+				 */
+				existingGiocatore = getGiocatoreByNomeRuolo(nomeGiocatore, ruolo, stagione);
+				if (existingGiocatore != null) {
+					updateSquadraGiocatore(existingGiocatore, nomeSquadra);
+				} else {
+					insertGiocatore(nomeSquadra, nomeGiocatore, ruolo, stagione);
+				}
+			}
+		}
+	}
+	
+	private void updateSquadraGiocatore(Giocatori giocatoreToUpdate, String nomeSquadra) {
+		log.info("updateSquadraGiocatore, aggiorno il giocatore ID [" + giocatoreToUpdate.getId() + "] alla squadra [" + nomeSquadra + "]");
+		int idSquadra = squadreEJB.getSquadraByNome(nomeSquadra).getId();
+		Query query = dbManager.getEm().createQuery(UPDATE_SQUADRA_GIOCATORE);
+		query.setParameter("idSquadra", idSquadra);
+		query.setParameter("idGiocatore", giocatoreToUpdate.getId());
+		query.executeUpdate();
+		// giocatoreToUpdate.getSquadre().setId(idSquadra);
+		// giocatoreToUpdate = this.getEntityManager().merge(giocatoreToUpdate);
+		dbManager.getEm().flush();
+	}
+	
+	private void insertGiocatore(String nomeSquadra, String nomeGiocatore, String ruolo, String stagione) {
+		Squadre squadraGiocatore = squadreEJB.getSquadraFromMapByNome(nomeSquadra);
+		Squadre squadra = new Squadre();
+		squadra.setId(squadraGiocatore.getId());
+		Giocatori toInsert = new Giocatori();
+		toInsert.setSquadre(squadra);
+		toInsert.setNome(nomeGiocatore);
+		toInsert.setRuolo(ruolo);
+		toInsert.setStagione(Constants.getStagione(stagione));
+		dbManager.persist(toInsert);
+	}
 
 	private Giocatori getGiocatoreByNomeSquadra(String nomeGiocatore, String squadra, String stagione, boolean noLike) {
 		Giocatori giocatoreToReturn = null;
@@ -500,7 +550,8 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		return toInsert.getId();
 	}
 
-	private Giocatori getGiocatoreByNomeSquadraRuolo(String nomeGiocatore, String squadra, String ruolo, String stagione, boolean noLike) {
+	@Override
+	public Giocatori getGiocatoreByNomeSquadraRuolo(String nomeGiocatore, String squadra, String ruolo, String stagione, boolean noLike) {
 		Giocatori giocatoreToReturn = null;
 		List<Giocatori> resultSet = null;
 		Giocatori existingGiocatore = getGiocatoreByNomeSquadra(nomeGiocatore, squadra, stagione, noLike);

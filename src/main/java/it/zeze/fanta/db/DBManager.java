@@ -38,6 +38,14 @@ public class DBManager {
 		return toReturn;
 	}
 	
+	public List<Giornate> getGiornateAll(){
+		List<Giornate> toReturn = new ArrayList<Giornate>();
+		String qryString = "SELECT g FROM Giornate g";
+		Query query = em.createQuery(qryString);
+		toReturn = (List<Giornate>) query.getResultList();
+		return toReturn;
+	}
+	
 	public List<Squadre> getSquadreAll(){
 		List<Squadre> toReturn = new ArrayList<Squadre>();
 		String qryString = "SELECT s FROM Squadre s";

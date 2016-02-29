@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import it.zeze.fanta.service.definition.GiocatoriInterface;
 import it.zeze.fanta.service.definition.ejb.GiocatoriLocal;
+import it.zeze.fantaformazioneweb.entity.Giocatori;
 
 @Path("/giocatoriRESTImpl")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -37,6 +38,18 @@ public class GiocatoriRESTImpl implements GiocatoriInterface {
 
 	@Override
 	public void unmarshallAndSaveFromHtmlFileForUpdateStagione(boolean noLike) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Giocatori getGiocatoreByNomeSquadraRuolo(String nomeGiocatore, String squadra, String ruolo, String stagione, boolean noLike) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insertOrUpdateGiocatore(String nomeSquadra, String nomeGiocatore, String ruolo, String stagione, boolean noLike) {
 		// TODO Auto-generated method stub
 		
 	}
