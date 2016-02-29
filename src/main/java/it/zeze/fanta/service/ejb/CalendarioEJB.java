@@ -17,7 +17,6 @@ import it.zeze.fanta.service.definition.ejb.CalendarioLocal;
 import it.zeze.fanta.service.definition.ejb.CalendarioRemote;
 import it.zeze.fanta.service.definition.ejb.GiornateLocal;
 import it.zeze.fanta.service.definition.ejb.SquadreLocal;
-import it.zeze.fanta.service.rest.CalendarioRESTImpl;
 import it.zeze.fantaformazioneweb.entity.Calendario;
 import it.zeze.fantaformazioneweb.entity.CalendarioId;
 import it.zeze.fantaformazioneweb.entity.Giornate;

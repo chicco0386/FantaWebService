@@ -10,6 +10,9 @@ import java.util.Map.Entry;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -29,6 +32,9 @@ import it.zeze.util.Constants;
 public class SquadreEJB implements SquadreLocal, SquadreRemote {
 
 	private static final Logger log = LogManager.getLogger(SquadreEJB.class);
+	
+	private static final String QUERY_GET_SQUADRA_BY_NAME = "select squadre from Squadre squadre where squadre.nome=:nomeSquadra";
+	private static final String QUERY_GET_SQUADRA_BY_ID = "select squadre from Squadre squadre where squadre.id=:id";
 
 	@EJB(name = "DBManager")
 	private DBManager dbManager;
@@ -102,14 +108,27 @@ public class SquadreEJB implements SquadreLocal, SquadreRemote {
 
 	@Override
 	public Squadre getSquadraByNome(String nomeSquadraToSearch) {
-		// TODO Auto-generated method stub
-		return null;
+		nomeSquadraToSearch = nomeSquadraToSearch.toUpperCase();
+		EntityManager em = dbManager.getEm();
+		Query query = em.createQuery(QUERY_GET_SQUADRA_BY_NAME);
+		query.setParameter("nomeSquadra", nomeSquadraToSearch.trim());
+		try {
+			return (Squadre) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
-
+	
 	@Override
 	public Squadre getSquadraById(int idSquadra) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = dbManager.getEm();
+		Query query = em.createQuery(QUERY_GET_SQUADRA_BY_ID);
+		query.setParameter("id", idSquadra);
+		try {
+			return (Squadre) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	@Override

@@ -3,8 +3,11 @@ package it.zeze.fanta.service.rest;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.LogManager;
@@ -25,8 +28,10 @@ public class GiocatoriRESTImpl implements GiocatoriInterface {
 	private GiocatoriLocal giocatoriEJB;
 
 	@Override
-	public void unmarshallAndSaveFromHtmlFile(boolean noLike) {
-		// TODO Auto-generated method stub
+	@GET
+	@Path("/unmarshallAndSaveFromHtmlFile")
+	public void unmarshallAndSaveFromHtmlFile(@QueryParam("noLike") boolean noLike) {
+		giocatoriEJB.unmarshallAndSaveFromHtmlFile(noLike);
 		
 	}
 
