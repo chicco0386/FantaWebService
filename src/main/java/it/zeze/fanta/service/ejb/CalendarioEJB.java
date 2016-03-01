@@ -14,7 +14,6 @@ import org.htmlcleaner.XPatherException;
 
 import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.CalendarioLocal;
-import it.zeze.fanta.service.definition.ejb.CalendarioRemote;
 import it.zeze.fanta.service.definition.ejb.GiornateLocal;
 import it.zeze.fanta.service.definition.ejb.SquadreLocal;
 import it.zeze.fantaformazioneweb.entity.Calendario;
@@ -24,7 +23,7 @@ import it.zeze.html.cleaner.HtmlCleanerUtil;
 
 @Stateless
 @LocalBean
-public class CalendarioEJB implements CalendarioLocal, CalendarioRemote{
+public class CalendarioEJB implements CalendarioLocal {
 	
 	private static final Logger log = LogManager.getLogger(CalendarioEJB.class);
 	

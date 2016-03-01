@@ -21,7 +21,6 @@ import org.htmlcleaner.XPatherException;
 import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.CalendarioLocal;
 import it.zeze.fanta.service.definition.ejb.GiornateLocal;
-import it.zeze.fanta.service.definition.ejb.GiornateRemote;
 import it.zeze.fantaformazioneweb.entity.Giornate;
 import it.zeze.html.cleaner.HtmlCleanerUtil;
 import it.zeze.util.ConfigurationUtil;
@@ -30,7 +29,7 @@ import it.zeze.util.DateUtil;
 
 @Stateless
 @LocalBean
-public class GiornateEJB implements GiornateLocal, GiornateRemote {
+public class GiornateEJB implements GiornateLocal {
 	
 	private static final String SELECT_BY_NUMERO_GIORNATA_STAGIONE = "SELECT g.id FROM Giornate g WHERE g.numeroGiornata = :numeroGiornata AND g.stagione = :stagione";
 	private static final String SELECT_BY_DATA = "SELECT g.id FROM Giornate g WHERE g.data = :data";

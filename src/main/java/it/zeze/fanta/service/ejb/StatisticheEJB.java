@@ -22,7 +22,6 @@ import it.zeze.fanta.service.definition.ejb.GiocatoriLocal;
 import it.zeze.fanta.service.definition.ejb.GiornateLocal;
 import it.zeze.fanta.service.definition.ejb.SquadreLocal;
 import it.zeze.fanta.service.definition.ejb.StatisticheLocal;
-import it.zeze.fanta.service.definition.ejb.StatisticheRemote;
 import it.zeze.fantaformazioneweb.entity.Giocatori;
 import it.zeze.fantaformazioneweb.entity.Giornate;
 import it.zeze.fantaformazioneweb.entity.Statistiche;
@@ -33,7 +32,7 @@ import it.zeze.util.Constants;
 
 @Stateless
 @LocalBean
-public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
+public class StatisticheEJB implements StatisticheLocal {
 	
 	private static final Logger log = LogManager.getLogger(StatisticheEJB.class);
 	

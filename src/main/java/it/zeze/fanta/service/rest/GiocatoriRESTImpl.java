@@ -5,7 +5,6 @@ import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -52,5 +51,11 @@ public class GiocatoriRESTImpl implements GiocatoriInterface {
 	public void insertOrUpdateGiocatore(String nomeSquadra, String nomeGiocatore, String ruolo, String stagione, boolean noLike) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Giocatori getGiocatoreByNomeSquadra(String nomeGiocatore, String squadra, String stagione, boolean noLike) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -17,7 +17,6 @@ import org.htmlcleaner.XPatherException;
 
 import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.GiocatoriLocal;
-import it.zeze.fanta.service.definition.ejb.GiocatoriRemote;
 import it.zeze.fanta.service.definition.ejb.SquadreLocal;
 import it.zeze.fantaformazioneweb.entity.Giocatori;
 import it.zeze.fantaformazioneweb.entity.Squadre;
@@ -27,7 +26,7 @@ import it.zeze.util.Constants;
 
 @Stateless
 @LocalBean
-public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
+public class GiocatoriEJB implements GiocatoriLocal {
 
 	private static final Logger log = LogManager.getLogger(GiornateEJB.class);
 
@@ -292,7 +291,8 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		dbManager.persist(toInsert);
 	}
 
-	private Giocatori getGiocatoreByNomeSquadra(String nomeGiocatore, String squadra, String stagione, boolean noLike) {
+	@Override
+	public Giocatori getGiocatoreByNomeSquadra(String nomeGiocatore, String squadra, String stagione, boolean noLike) {
 		Giocatori giocatoreToReturn = null;
 		Query query = dbManager.getEm().createQuery(SELECT_BY_NOME_AND_SQUADRA_AND_STAGIONE);
 		query.setParameter("squadra", squadra.trim());
