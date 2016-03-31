@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import it.zeze.fanta.service.bean.SelectItem;
 import it.zeze.fanta.service.definition.GiornateInterface;
 import it.zeze.fanta.service.definition.ejb.GiornateLocal;
 import it.zeze.fantaformazioneweb.entity.Giornate;
@@ -82,6 +83,13 @@ public class GiornateRESTImpl implements GiornateInterface {
 	public List<Giornate> getGiornateAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@GET
+	@Path("/getStagioniAll")
+	@Override
+	public List<SelectItem> getStagioniAll() {
+		return giornateEJB.getStagioniAll();
 	}
 	
 	

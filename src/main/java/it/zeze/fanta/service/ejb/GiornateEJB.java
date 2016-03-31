@@ -19,6 +19,7 @@ import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 
 import it.zeze.fanta.db.DBManager;
+import it.zeze.fanta.service.bean.SelectItem;
 import it.zeze.fanta.service.definition.ejb.CalendarioLocal;
 import it.zeze.fanta.service.definition.ejb.GiornateLocal;
 import it.zeze.fantaformazioneweb.entity.Giornate;
@@ -36,6 +37,7 @@ public class GiornateEJB implements GiornateLocal {
 	private static final String SELECT_BY_ID = "SELECT g FROM Giornate g WHERE g.id = :idGiornata";
 	private static final String ORDER_BY_ID = "SELECT g FROM Giornate g ORDER BY g.id DESC";
 	private static final String SELECT_BY_STAGIONE = "SELECT g FROM Giornate g WHERE g.stagione = :stagione ORDER BY g.id DESC";
+	private final static String SELECT_STAGIONI = "select g.stagione from Giornate g group by g.stagione order by g.stagione desc";
 
 	private static final Logger log = LogManager.getLogger(GiornateEJB.class);
 
@@ -196,6 +198,19 @@ public class GiornateEJB implements GiornateLocal {
 		String qryString = "SELECT g FROM Giornate g";
 		Query query = dbManager.getEm().createQuery(qryString);
 		toReturn = (List<Giornate>) query.getResultList();
+		return toReturn;
+	}
+
+	@Override
+	public List<SelectItem> getStagioniAll() {
+		List<SelectItem> toReturn = new ArrayList<SelectItem>();
+		Query query = dbManager.getEm().createQuery(SELECT_STAGIONI);
+		List<String> resultList = query.getResultList();
+		String currentStagione;
+		for (int i = 0; i < resultList.size(); i++) {
+			currentStagione = resultList.get(i);
+			toReturn.add(new SelectItem(currentStagione, currentStagione));
+		}
 		return toReturn;
 	}
 }
