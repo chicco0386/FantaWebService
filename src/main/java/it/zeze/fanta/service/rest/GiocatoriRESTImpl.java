@@ -30,8 +30,8 @@ public class GiocatoriRESTImpl implements GiocatoriInterface {
 	@Override
 	@GET
 	@Path("/unmarshallAndSaveFromHtmlFile")
-	public void unmarshallAndSaveFromHtmlFile(@QueryParam("noLike") boolean noLike) {
-		giocatoriEJB.unmarshallAndSaveFromHtmlFile(noLike);
+	public void unmarshallAndSaveFromHtmlFile(@QueryParam("stagione") String stagione, @QueryParam("noLike") boolean noLike) {
+		giocatoriEJB.unmarshallAndSaveFromHtmlFile(stagione, noLike);
 		
 	}
 

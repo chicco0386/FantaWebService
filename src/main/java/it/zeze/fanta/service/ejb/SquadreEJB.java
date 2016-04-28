@@ -32,7 +32,7 @@ import it.zeze.util.Constants;
 public class SquadreEJB implements SquadreLocal {
 
 	private static final Logger log = LogManager.getLogger(SquadreEJB.class);
-	
+
 	private static final String QUERY_GET_SQUADRA_BY_NAME = "select squadre from Squadre squadre where squadre.nome=:nomeSquadra";
 	private static final String QUERY_GET_SQUADRA_BY_ID = "select squadre from Squadre squadre where squadre.id=:id";
 
@@ -103,6 +103,18 @@ public class SquadreEJB implements SquadreLocal {
 				squadraToReturn.setNome(currentEntity.getValue());
 			}
 		}
+		// Ricerco per LIKE per nuovo HTML
+		if (!trovato) {
+			it = mapSquadre.entrySet().iterator();
+			while (it.hasNext() && !trovato) {
+				currentEntity = it.next();
+				if (currentEntity.getValue().toLowerCase().startsWith(nomeSquadraToSearch.trim().toLowerCase())) {
+					trovato = true;
+					squadraToReturn.setId(currentEntity.getKey());
+					squadraToReturn.setNome(currentEntity.getValue());
+				}
+			}
+		}
 		return squadraToReturn;
 	}
 
@@ -118,7 +130,7 @@ public class SquadreEJB implements SquadreLocal {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public Squadre getSquadraById(int idSquadra) {
 		EntityManager em = dbManager.getEm();
@@ -130,8 +142,8 @@ public class SquadreEJB implements SquadreLocal {
 			return null;
 		}
 	}
-	
-	public List<Squadre> getSquadreAll(){
+
+	public List<Squadre> getSquadreAll() {
 		List<Squadre> toReturn = new ArrayList<Squadre>();
 		String qryString = "SELECT s FROM Squadre s";
 		Query query = dbManager.getEm().createQuery(qryString);
