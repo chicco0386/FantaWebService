@@ -20,6 +20,7 @@ import org.htmlcleaner.XPatherException;
 
 import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.GiocatoriLocal;
+import it.zeze.fanta.service.definition.ejb.GiocatoriRemote;
 import it.zeze.fanta.service.definition.ejb.SquadreLocal;
 import it.zeze.fantaformazioneweb.entity.Giocatori;
 import it.zeze.fantaformazioneweb.entity.Squadre;
@@ -30,7 +31,7 @@ import it.zeze.util.JSONUtil;
 
 @Stateless
 @LocalBean
-public class GiocatoriEJB implements GiocatoriLocal {
+public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 
 	private static final Logger log = LogManager.getLogger(GiornateEJB.class);
 

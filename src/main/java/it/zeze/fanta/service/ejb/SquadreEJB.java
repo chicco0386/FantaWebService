@@ -22,6 +22,7 @@ import org.htmlcleaner.XPatherException;
 
 import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.SquadreLocal;
+import it.zeze.fanta.service.definition.ejb.SquadreRemote;
 import it.zeze.fantaformazioneweb.entity.Squadre;
 import it.zeze.html.cleaner.HtmlCleanerUtil;
 import it.zeze.util.ConfigurationUtil;
@@ -29,7 +30,7 @@ import it.zeze.util.Constants;
 
 @Stateless
 @LocalBean
-public class SquadreEJB implements SquadreLocal {
+public class SquadreEJB implements SquadreLocal, SquadreRemote {
 
 	private static final Logger log = LogManager.getLogger(SquadreEJB.class);
 

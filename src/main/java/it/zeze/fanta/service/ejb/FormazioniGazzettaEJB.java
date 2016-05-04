@@ -23,6 +23,7 @@ import org.htmlcleaner.XPatherException;
 
 import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.FormazioniGazzettaLocal;
+import it.zeze.fanta.service.definition.ejb.FormazioniGazzettaRemote;
 import it.zeze.fanta.service.definition.ejb.GiocatoriLocal;
 import it.zeze.fanta.service.definition.ejb.GiornateLocal;
 import it.zeze.fanta.service.definition.ejb.SquadreLocal;
@@ -37,7 +38,7 @@ import it.zeze.util.FileFormazioneGazzettaComparator;
 
 @Stateless
 @LocalBean
-public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal {
+public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, FormazioniGazzettaRemote {
 
 	private static final Logger log = LogManager.getLogger(FormazioniGazzettaEJB.class);
 	
