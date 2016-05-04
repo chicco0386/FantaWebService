@@ -44,9 +44,9 @@ public class CalendarioEJB implements CalendarioLocal, CalendarioRemote {
 	private GiornateLocal giornateEJB;
 
 	@Override
-	public void inizializzaCalendario() {
+	public void inizializzaCalendario(String stagione) {
 		squadreEJB.unmarshallAndSaveFromHtmlFile();
-		giornateEJB.unmarshallAndSaveFromHtmlFile();
+		giornateEJB.unmarshallAndSaveFromHtmlFile(stagione);
 	}
 
 	@Override
