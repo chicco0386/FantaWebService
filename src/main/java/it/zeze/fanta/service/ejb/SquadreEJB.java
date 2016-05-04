@@ -14,6 +14,10 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -52,6 +56,10 @@ public class SquadreEJB implements SquadreLocal, SquadreRemote {
 		List<TagNode> listNodeSquadre;
 		try {
 			listNodeSquadre = HtmlCleanerUtil.getListOfElementsByXPathFromFile(pathCompletoFileSquadre, "//div[@class='content']/table/tbody/tr/td[@class='a-left']/a");
+			if (listNodeSquadre == null || listNodeSquadre.isEmpty()) {
+				// Leggo squadre nuovo HTML
+				listNodeSquadre = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromFile(pathCompletoFileSquadre, "//table[@id='DataTables_Table_0']/tbody/tr/td/a/span[contains(@class,'nteam')][1]");
+			}
 			TagNode currentNodeSquadra;
 			String nomeSquadra;
 			Squadre foundSquadra = null;
@@ -63,19 +71,32 @@ public class SquadreEJB implements SquadreLocal, SquadreRemote {
 					if (foundSquadra != null && foundSquadra.getId() > 0) {
 						log.info("Squadra [" + nomeSquadra + "] gia' inserita");
 					} else {
-						Squadre toInsert = new Squadre();
-						toInsert.setNome(nomeSquadra.toUpperCase());
-						dbManager.persist(toInsert);
+						Squadre squadraToInsert = new Squadre();
+						squadraToInsert.setNome(nomeSquadra.toUpperCase());
+						dbManager.getEm().persist(squadraToInsert);
 					}
 				}
 			}
 		} catch (IOException e) {
-			log.error(e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (XPatherException e) {
-			log.error(e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		log.info("unmarshallAndSaveFromHtmlFile, uscito");
-
 	}
 
 	@Override
@@ -105,7 +126,7 @@ public class SquadreEJB implements SquadreLocal, SquadreRemote {
 			}
 		}
 		// Ricerco per LIKE per nuovo HTML
-		if (!trovato) {
+		if (!trovato){
 			it = mapSquadre.entrySet().iterator();
 			while (it.hasNext() && !trovato) {
 				currentEntity = it.next();
@@ -124,7 +145,7 @@ public class SquadreEJB implements SquadreLocal, SquadreRemote {
 		nomeSquadraToSearch = nomeSquadraToSearch.toUpperCase();
 		EntityManager em = dbManager.getEm();
 		Query query = em.createQuery(QUERY_GET_SQUADRA_BY_NAME);
-		query.setParameter("nomeSquadra", nomeSquadraToSearch.trim());
+		query.setParameter("nomeSquadra", nomeSquadraToSearch.trim().toUpperCase());
 		try {
 			return (Squadre) query.getSingleResult();
 		} catch (NoResultException e) {

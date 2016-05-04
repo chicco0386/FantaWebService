@@ -6,6 +6,9 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -20,6 +23,7 @@ import it.zeze.fanta.service.definition.ejb.SquadreLocal;
 import it.zeze.fantaformazioneweb.entity.Calendario;
 import it.zeze.fantaformazioneweb.entity.CalendarioId;
 import it.zeze.fantaformazioneweb.entity.Giornate;
+import it.zeze.fantaformazioneweb.entity.Squadre;
 import it.zeze.html.cleaner.HtmlCleanerUtil;
 
 @Stateless
@@ -27,6 +31,8 @@ import it.zeze.html.cleaner.HtmlCleanerUtil;
 public class CalendarioEJB implements CalendarioLocal, CalendarioRemote {
 	
 	private static final Logger log = LogManager.getLogger(CalendarioEJB.class);
+	
+	private static final String GET_CALENDARIO_BY_ID_GIOR_ID_SQUADRA = "select calendario from Calendario calendario where calendario.id.idGiornata = :idGiornata AND (calendario.id.idSquadraCasa = :idSquadra OR calendario.id.idSquadraFuoriCasa = :idSquadra)";
 	
 	@EJB(name = "DBManager")
 	private DBManager dbManager;
@@ -74,29 +80,67 @@ public class CalendarioEJB implements CalendarioLocal, CalendarioRemote {
 				}
 			}
 		} catch (IOException e) {
-			log.error(e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (XPatherException e) {
-			log.error(e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		log.info("unmarshallAndSaveFromHtmlFile, uscito");
-		
 	}
 
 	@Override
 	public Calendario getCalendarioByIdGiornataIdSquadra(int idGiornata, int idSquadra) {
-		// TODO Auto-generated method stub
-		return null;
+		Calendario toReturn = null;
+		EntityManager em = dbManager.getEm();
+		Query query = em.createQuery(GET_CALENDARIO_BY_ID_GIOR_ID_SQUADRA);
+		query.setParameter("idGiornata", idGiornata);
+		query.setParameter("idSquadra", idSquadra);
+		try {
+			toReturn = (Calendario) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+		return toReturn;
 	}
 
 	@Override
 	public String getNomeSquadraAvversaria(int idGiornata, int idSquadra) {
-		return "PROVA EJBBBBBBB";
+		String nomeSquadraAvv = "";
+		try {
+			Calendario calendarioReturn = getCalendarioByIdGiornataIdSquadra(idGiornata, idSquadra);
+			if (calendarioReturn != null) {
+				int idSquadraToSearch = 0;
+				if (calendarioReturn.getId().getIdSquadraCasa() != idSquadra) {
+					idSquadraToSearch = calendarioReturn.getId().getIdSquadraCasa();
+				} else if (calendarioReturn.getId().getIdSquadraFuoriCasa() != idSquadra) {
+					idSquadraToSearch = calendarioReturn.getId().getIdSquadraFuoriCasa();
+				}
+				if (idSquadraToSearch > 0) {
+					Squadre squadra = squadreEJB.getSquadraById(idSquadraToSearch);
+					nomeSquadraAvv = squadra.getNome();
+				} else {
+					log.warn("idSquadra NON trovato");
+				}
+			}
+		} catch (NoResultException e) {
+			return null;
+		}
+		return nomeSquadraAvv;
 	}
 
 	@Override
 	public boolean isSquadraFuoriCasa(int idGiornata, int idSquadra) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isCasa = true;
+		Calendario calendarioReturn = getCalendarioByIdGiornataIdSquadra(idGiornata, idSquadra);
+		if (calendarioReturn != null) {
+			if (calendarioReturn.getId().getIdSquadraCasa() == idSquadra) {
+				isCasa = true;
+			} else if (calendarioReturn.getId().getIdSquadraFuoriCasa() == idSquadra) {
+				isCasa = false;
+			}
+		}
+		return isCasa;
 	}
 
 }

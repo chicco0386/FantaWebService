@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.io.FileUtils;
@@ -90,16 +91,15 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 				// Questo perche' nel nuovo HTML NON trova
 				// currentFile.getAbsolutePath(), "class", "num-day").get(0)
 				// Nuovo HTML gazzetta 2014
-				String currentStagione = Constants.getStagione(stagione);
 				List<TagNode> listNode;
 				try {
 					listNode = HtmlCleanerUtil.getListOfElementsByXPathFromFile(currentFile.getAbsolutePath(), "//*[@id='calcio']/section[1]/section[3]/div[1]/div/div[1]/h3");
-
+					
 					String currentGiornataNew = listNode.get(0).getText().toString();
 					// 1a giornata
 					currentGiornataNew = StringUtils.substringBefore(currentGiornataNew.trim().toLowerCase(), "a giornata".toLowerCase());
-					log.info("Probabili formazioni FG NEW 2014 per la " + "[" + currentGiornataNew + "]a giornata stagione [" + currentStagione + "]");
-					unmarshallAndSaveSingleHtmlFileNew2014_2015(currentFile, currentGiornataNew, currentStagione);
+					log.info("Probabili formazioni FG NEW 2014 per la " + "[" + currentGiornataNew + "]a giornata stagione [" + stagione + "]");
+					unmarshallAndSaveSingleHtmlFileNew2014_2015(currentFile, currentGiornataNew, stagione);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -151,13 +151,11 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 					Giocatori giocatoriFormazione = giocatoriEJB.getGiocatoreByNomeSquadra(currentNomeGiocatore, nomeSquadra, stagione, noLike);
 					if (giocatoriFormazione != null) {
 						if (!HtmlCleanerUtil.nodeContainsAttribute(currentGiocatoreNode.getParent(), "class", "bottom")) {
-							
 							ProbabiliFormazioniGazzettaId instanceId = new ProbabiliFormazioniGazzettaId(giocatoriFormazione.getId(), idGiornata, true, false);
 							ProbabiliFormazioniGazzetta instance = new ProbabiliFormazioniGazzetta();
 							instance.setId(instanceId);
 							dbManager.persist(instance);
 						} else {
-							
 							ProbabiliFormazioniGazzettaId instanceId = new ProbabiliFormazioniGazzettaId(giocatoriFormazione.getId(), idGiornata, false, true);
 							ProbabiliFormazioniGazzetta instance = new ProbabiliFormazioniGazzetta();
 							instance.setId(instanceId);
@@ -182,7 +180,6 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 					log.info("------ currentGiocatore OUT: " + currentNomeGiocatore);
 					Giocatori giocatoriFormazione = giocatoriEJB.getGiocatoreByNomeSquadra(currentNomeGiocatore, nomeSquadra, stagione, noLike);
 					if (giocatoriFormazione != null) {
-						
 						if (!HtmlCleanerUtil.nodeContainsAttribute(currentGiocatoreNode.getParent(), "class", "bottom")) {
 							ProbabiliFormazioniGazzettaId instanceId = new ProbabiliFormazioniGazzettaId(giocatoriFormazione.getId(), idGiornata, true, false);
 							ProbabiliFormazioniGazzetta instance = new ProbabiliFormazioniGazzetta();
@@ -257,7 +254,6 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 						if (currentNomeGiocatore != null && !StringUtils.deleteWhitespace(currentNomeGiocatore).isEmpty()) {
 							Giocatori giocatoriFormazione = giocatoriEJB.getGiocatoreByNomeSquadra(currentNomeGiocatore, currentNomeSquadraCasa, stagione, noLike);
 							if (giocatoriFormazione != null) {
-								
 								ProbabiliFormazioniGazzettaId instanceId = new ProbabiliFormazioniGazzettaId(giocatoriFormazione.getId(), idGiornata, true, false);
 								ProbabiliFormazioniGazzetta instance = new ProbabiliFormazioniGazzetta();
 								instance.setId(instanceId);
@@ -278,7 +274,6 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 					if (currentNomeGiocatore != null && !StringUtils.deleteWhitespace(currentNomeGiocatore).isEmpty()) {
 						Giocatori giocatoriFormazione = giocatoriEJB.getGiocatoreByNomeSquadra(currentNomeGiocatore, currentNomeSquadraCasa, stagione, noLike);
 						if (giocatoriFormazione != null) {
-							
 							ProbabiliFormazioniGazzettaId instanceId = new ProbabiliFormazioniGazzettaId(giocatoriFormazione.getId(), idGiornata, false, true);
 							ProbabiliFormazioniGazzetta instance = new ProbabiliFormazioniGazzetta();
 							instance.setId(instanceId);
@@ -300,7 +295,6 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 						if (currentNomeGiocatore != null && !StringUtils.deleteWhitespace(currentNomeGiocatore).isEmpty()) {
 							Giocatori giocatoriFormazione = giocatoriEJB.getGiocatoreByNomeSquadra(currentNomeGiocatore, currentNomeSquadraFuori, stagione, noLike);
 							if (giocatoriFormazione != null) {
-								
 								ProbabiliFormazioniGazzettaId instanceId = new ProbabiliFormazioniGazzettaId(giocatoriFormazione.getId(), idGiornata, true, false);
 								ProbabiliFormazioniGazzetta instance = new ProbabiliFormazioniGazzetta();
 								instance.setId(instanceId);
@@ -321,7 +315,6 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 					if (currentNomeGiocatore != null && !StringUtils.deleteWhitespace(currentNomeGiocatore).isEmpty()) {
 						Giocatori giocatoriFormazione = giocatoriEJB.getGiocatoreByNomeSquadra(currentNomeGiocatore, currentNomeSquadraFuori, stagione, noLike);
 						if (giocatoriFormazione != null) {
-							
 							ProbabiliFormazioniGazzettaId instanceId = new ProbabiliFormazioniGazzettaId(giocatoriFormazione.getId(), idGiornata, false, true);
 							ProbabiliFormazioniGazzetta instance = new ProbabiliFormazioniGazzetta();
 							instance.setId(instanceId);
@@ -364,5 +357,29 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 			toReturn.add(currentPanchina.trim());
 		}
 		return toReturn;	
+	}
+	
+	public ProbabiliFormazioniGazzetta selectByIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
+		ProbabiliFormazioniGazzetta toReturn = null;
+		Query query = dbManager.getEm().createQuery(SELECT_BY_ID_GIOCATORE_ID_GIORNATA);
+		query.setParameter("idGiocatore", idGiocatore);
+		query.setParameter("idGiornata", idGiornata);
+		try {
+			toReturn = (ProbabiliFormazioniGazzetta) query.getSingleResult();
+		} catch (NoResultException e) {
+			log.error("Nessun risultato tovato con idGiocatore [" + idGiocatore + "] e idGiornata [" + idGiornata + "]");
+		}
+		return toReturn;
+	}
+
+	private boolean probFormGiaInserita(int idGiornata) {
+		boolean giaInserita = false;
+		Query query = dbManager.getEm().createQuery(SELECT_COUNT_ID_GIORNATA);
+		query.setParameter("idGiornata", idGiornata);
+		long count = (Long) query.getSingleResult();
+		if (count > 0) {
+			giaInserita = true;
+		}
+		return giaInserita;
 	}
 }

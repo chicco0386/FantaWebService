@@ -28,6 +28,7 @@ import it.zeze.html.cleaner.HtmlCleanerUtil;
 import it.zeze.util.ConfigurationUtil;
 import it.zeze.util.Constants;
 import it.zeze.util.JSONUtil;
+import it.zeze.util.NomiUtils;
 
 @Stateless
 @LocalBean
@@ -157,7 +158,6 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 				nomeFileGiocatoriD = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_FILE_GIOCATORI_DIFENSORI_NEW);
 				nomeFileGiocatoriC = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_FILE_GIOCATORI_CENTROCAMPISTI_NEW);
 				nomeFileGiocatoriA = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_FILE_GIOCATORI_ATTACCANTI_NEW);
-				pathCompletoFile = rootHTMLFiles + nomeFileGiocatoriP;
 				listIdGiocatoriStagione = getGiocatoreIdByStagione(stagione);
 				String currentNomeGiocatore;
 				String currentSquadraGiocatore;
@@ -165,6 +165,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 				String currentGiocatoreQuotazIniziale;
 				int idGiocatoreDb;
 				String currentRiga;
+				pathCompletoFile = rootHTMLFiles + nomeFileGiocatoriP;
 				log.info("Leggo il file HTML [" + pathCompletoFile + "]");
 				File currentFile = new File(pathCompletoFile);
 				String json = FileUtils.readFileToString(currentFile);
@@ -251,13 +252,118 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 
 	@Override
 	public void unmarshallAndSaveFromHtmlFileForUpdateStagione(boolean noLike) {
-		// TODO Auto-generated method stub
+		log.info("unmarshallAndSaveFromHtmlFile, entrato");
+		String rootHTMLFiles = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_ROOT);
+		// Portieri
+		String nomeFileGiocatoriP = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_FILE_GIOCATORI_PORTIERI);
+		String nomeFileGiocatoriD = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_FILE_GIOCATORI_DIFENSORI);
+		String nomeFileGiocatoriC = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_FILE_GIOCATORI_CENTROCAMPISTI);
+		String nomeFileGiocatoriA = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_FILE_GIOCATORI_ATTACCANTI);
+		String pathCompletoFile = rootHTMLFiles + nomeFileGiocatoriP;
+		try {
+			squadreEJB.initMappaSquadre();
+			TagNode stagioneTagNode = HtmlCleanerUtil.getListOfElementsByXPathFromFile(pathCompletoFile, "//*[@id='stats']/h1").get(0);
+			String stagione = stagioneTagNode.getText().toString().trim();
+			stagione = StringUtils.substringBetween(stagione.toLowerCase(), "Quotazioni Stagione ".toLowerCase(), " Fantagazzetta.com".toLowerCase());
+			stagione = Constants.getStagione(stagione);
+			log.info("Leggo i file HTML giocatori per la stagione [" + stagione + "]");
+			// TODO Setto a null per non gestire la stagione dei giocatori, da
+			// gestire in futuro
+			// stagione = null;
+			List<TagNode> listNodeGiocatori = HtmlCleanerUtil.getListOfElementsByXPathFromFile(pathCompletoFile, "//div[@class='content']/table/tbody/tr");
+			TagNode currentNodeGiocatore;
+			List<TagNode> listNodeSingoloGiocatore;
+			List<TagNode> listNodeSingoloGiocatoreQuotaz;
+			String currentNomeGiocatore;
+			String currentSquadraGiocatore;
+			String currentGiocatoreQuotazAttuale;
+			String currentGiocatoreQuotazIniziale;
+			log.info("Leggo il file HTML [" + pathCompletoFile + "]");
+			for (int i = 0; i < listNodeGiocatori.size(); i++) {
+				currentNodeGiocatore = listNodeGiocatori.get(i);
+				listNodeSingoloGiocatore = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeGiocatore, "//td/a");
+				currentNomeGiocatore = listNodeSingoloGiocatore.get(0).getText().toString().trim();
+				currentSquadraGiocatore = listNodeSingoloGiocatore.get(2).getText().toString().trim();
+				listNodeSingoloGiocatoreQuotaz = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeGiocatore, "//td");
+				currentGiocatoreQuotazAttuale = listNodeSingoloGiocatoreQuotaz.get(1).getText().toString().trim();
+				currentGiocatoreQuotazIniziale = listNodeSingoloGiocatoreQuotaz.get(2).getText().toString().trim();
 
+				Giocatori existingGiocatore = getGiocatoreByNomeRuolo(currentNomeGiocatore, Constants.GIOCATORI_RUOLO_PORTIERE);
+				if (existingGiocatore != null)
+					updateSquadraGiocatore(existingGiocatore, currentSquadraGiocatore, currentGiocatoreQuotazIniziale, currentGiocatoreQuotazAttuale, stagione);
+				else
+					log.info("Giocatore [" + currentNomeGiocatore + "] squadra [" + currentSquadraGiocatore + "]");
+			}
+			// Difensori
+			pathCompletoFile = rootHTMLFiles + nomeFileGiocatoriD;
+			listNodeGiocatori = HtmlCleanerUtil.getListOfElementsByXPathFromFile(pathCompletoFile, "//div[@class='content']/table/tbody/tr");
+			log.info("Leggo il file HTML [" + pathCompletoFile + "]");
+			for (int i = 0; i < listNodeGiocatori.size(); i++) {
+				currentNodeGiocatore = listNodeGiocatori.get(i);
+				listNodeSingoloGiocatore = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeGiocatore, "//td/a");
+				currentNomeGiocatore = listNodeSingoloGiocatore.get(0).getText().toString().trim();
+				currentSquadraGiocatore = listNodeSingoloGiocatore.get(2).getText().toString().trim();
+				listNodeSingoloGiocatoreQuotaz = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeGiocatore, "//td");
+				currentGiocatoreQuotazAttuale = listNodeSingoloGiocatoreQuotaz.get(1).getText().toString().trim();
+				currentGiocatoreQuotazIniziale = listNodeSingoloGiocatoreQuotaz.get(2).getText().toString().trim();
+
+				Giocatori existingGiocatore = getGiocatoreByNomeRuolo(currentNomeGiocatore, Constants.GIOCATORI_RUOLO_DIFENSORE);
+				if (existingGiocatore != null)
+					updateSquadraGiocatore(existingGiocatore, currentSquadraGiocatore, currentGiocatoreQuotazIniziale, currentGiocatoreQuotazAttuale, stagione);
+				else
+					log.info("Giocatore [" + currentNomeGiocatore + "] squadra [" + currentSquadraGiocatore + "]");
+			}
+			// Centrocampisti
+			pathCompletoFile = rootHTMLFiles + nomeFileGiocatoriC;
+			listNodeGiocatori = HtmlCleanerUtil.getListOfElementsByXPathFromFile(pathCompletoFile, "//div[@class='content']/table/tbody/tr");
+			log.info("Leggo il file HTML [" + pathCompletoFile + "]");
+			for (int i = 0; i < listNodeGiocatori.size(); i++) {
+				currentNodeGiocatore = listNodeGiocatori.get(i);
+				listNodeSingoloGiocatore = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeGiocatore, "//td/a");
+				currentNomeGiocatore = listNodeSingoloGiocatore.get(0).getText().toString().trim();
+				currentSquadraGiocatore = listNodeSingoloGiocatore.get(2).getText().toString().trim();
+				listNodeSingoloGiocatoreQuotaz = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeGiocatore, "//td");
+				currentGiocatoreQuotazAttuale = listNodeSingoloGiocatoreQuotaz.get(1).getText().toString().trim();
+				currentGiocatoreQuotazIniziale = listNodeSingoloGiocatoreQuotaz.get(2).getText().toString().trim();
+
+				Giocatori existingGiocatore = getGiocatoreByNomeRuolo(currentNomeGiocatore, Constants.GIOCATORI_RUOLO_CENTROCAMPISTA);
+				if (existingGiocatore != null)
+					updateSquadraGiocatore(existingGiocatore, currentSquadraGiocatore, currentGiocatoreQuotazIniziale, currentGiocatoreQuotazAttuale, stagione);
+				else
+					log.info("Giocatore [" + currentNomeGiocatore + "] squadra [" + currentSquadraGiocatore + "]");
+			}
+			// Attaccanti
+			pathCompletoFile = rootHTMLFiles + nomeFileGiocatoriA;
+			listNodeGiocatori = HtmlCleanerUtil.getListOfElementsByXPathFromFile(pathCompletoFile, "//div[@class='content']/table/tbody/tr");
+			log.info("Leggo il file HTML [" + pathCompletoFile + "]");
+			for (int i = 0; i < listNodeGiocatori.size(); i++) {
+				currentNodeGiocatore = listNodeGiocatori.get(i);
+				listNodeSingoloGiocatore = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeGiocatore, "//td/a");
+				currentNomeGiocatore = listNodeSingoloGiocatore.get(0).getText().toString().trim();
+				currentSquadraGiocatore = listNodeSingoloGiocatore.get(2).getText().toString().trim();
+				listNodeSingoloGiocatoreQuotaz = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeGiocatore, "//td");
+				currentGiocatoreQuotazAttuale = listNodeSingoloGiocatoreQuotaz.get(1).getText().toString().trim();
+				currentGiocatoreQuotazIniziale = listNodeSingoloGiocatoreQuotaz.get(2).getText().toString().trim();
+
+				Giocatori existingGiocatore = getGiocatoreByNomeRuolo(currentNomeGiocatore, Constants.GIOCATORI_RUOLO_ATTACCANTE);
+				if (existingGiocatore != null)
+					updateSquadraGiocatore(existingGiocatore, currentSquadraGiocatore, currentGiocatoreQuotazIniziale, currentGiocatoreQuotazAttuale, stagione);
+				else
+					log.info("Giocatore [" + currentNomeGiocatore + "] squadra [" + currentSquadraGiocatore + "]");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XPatherException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		log.info("unmarshallAndSaveFromHtmlFile, uscito");
 	}
 
 	private int insertOrUpdateGiocatore(String nomeSquadra, String nomeGiocatore, String ruolo, String stagione, String quotazIniziale, String quotazAttuale, boolean noLike) {
 		/*
-		 * Se il giocatore lo trovo gia' con la select per squadra,nome,ruolo
+		 * Se il giocatore lo trovo gi� con la select per squadra,nome,ruolo
 		 * allora nn faccio niente
 		 */
 		int idGiocatore = -1;
@@ -367,8 +473,6 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		query.setParameter("idSquadra", idSquadra);
 		query.setParameter("idGiocatore", giocatoreToUpdate.getId());
 		query.executeUpdate();
-		// giocatoreToUpdate.getSquadre().setId(idSquadra);
-		// giocatoreToUpdate = this.getEntityManager().merge(giocatoreToUpdate);
 		dbManager.getEm().flush();
 	}
 	
@@ -389,7 +493,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		Giocatori giocatoreToReturn = null;
 		Query query = dbManager.getEm().createQuery(SELECT_BY_NOME_AND_SQUADRA_AND_STAGIONE);
 		query.setParameter("squadra", squadra.trim());
-		query.setParameter("nomeGiocatore", nomeGiocatore.trim());
+		query.setParameter("nomeGiocatore", NomiUtils.pulisciNome(nomeGiocatore));
 		query.setParameter("stagione", Constants.getStagione(stagione));
 		List<Giocatori> resultSet = query.getResultList();
 		if (resultSet.size() == 1) {
@@ -485,7 +589,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		Giocatori giocatoreToReturn = null;
 		Query query = dbManager.getEm().createQuery(SELECT_BY_NOME_AND_SQUADRA);
 		query.setParameter("squadra", squadra.trim());
-		query.setParameter("nomeGiocatore", nomeGiocatore.trim());
+		query.setParameter("nomeGiocatore", NomiUtils.pulisciNome(nomeGiocatore));
 		List<Giocatori> resultSet = query.getResultList();
 		if (resultSet.size() == 1) {
 			giocatoreToReturn = resultSet.get(0);
@@ -539,7 +643,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 			Query query = dbManager.getEm().createQuery(SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO);
 			query.setParameter("squadra", squadra.trim());
 			query.setParameter("ruolo", ruolo.trim());
-			query.setParameter("nomeGiocatore", nomeGiocatore.trim());
+			query.setParameter("nomeGiocatore", NomiUtils.pulisciNome(nomeGiocatore));
 			List<Giocatori> resultSet = query.getResultList();
 			if (resultSet.size() == 1) {
 				giocatoreToReturn = resultSet.get(0);
@@ -632,7 +736,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		squadra.setId(squadraGiocatore.getId());
 		Giocatori toInsert = new Giocatori();
 		toInsert.setSquadre(squadra);
-		toInsert.setNome(nomeGiocatore);
+		toInsert.setNome(NomiUtils.pulisciNome(nomeGiocatore));
 		toInsert.setRuolo(ruolo);
 		toInsert.setQuotazIniziale(getQuotazioneFromString(quotazIniziale));
 		toInsert.setQuotazAttuale(getQuotazioneFromString(quotazAttuale));
@@ -652,7 +756,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 			Query query = dbManager.getEm().createQuery(SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO_AND_STAGIONE);
 			query.setParameter("squadra", squadra.trim());
 			query.setParameter("ruolo", ruolo.trim());
-			query.setParameter("nomeGiocatore", nomeGiocatore.trim());
+			query.setParameter("nomeGiocatore", NomiUtils.pulisciNome(nomeGiocatore));
 			query.setParameter("stagione", Constants.getStagione(stagione));
 			resultSet = query.getResultList();
 			if (resultSet.size() == 1) {
@@ -715,7 +819,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		Giocatori giocatoreToReturn = null;
 		Query query = dbManager.getEm().createQuery(SELECT_BY_NOME_AND_RUOLO_AND_STAGIONE);
 		query.setParameter("ruolo", ruolo.trim());
-		query.setParameter("nomeGiocatore", nomeGiocatore.trim());
+		query.setParameter("nomeGiocatore", NomiUtils.pulisciNome(nomeGiocatore));
 		query.setParameter("stagione", Constants.getStagione(stagione));
 		List<Giocatori> resultSet = query.getResultList();
 		if (resultSet.size() == 1) {
@@ -746,7 +850,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		squadra.setId(squadraGiocatore.getId());
 		Giocatori toInsert = new Giocatori();
 		toInsert.setSquadre(squadra);
-		toInsert.setNome(nomeGiocatore);
+		toInsert.setNome(NomiUtils.pulisciNome(nomeGiocatore));
 		toInsert.setRuolo(ruolo);
 		toInsert.setQuotazIniziale(getQuotazioneFromString(quotazIniziale));
 		toInsert.setQuotazAttuale(getQuotazioneFromString(quotazAttuale));

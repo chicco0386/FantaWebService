@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.LogManager;
@@ -32,9 +33,9 @@ public class GiornateRESTImpl implements GiornateInterface {
 	@GET
 	@Path("/unmarshallAndSaveFromHtmlFile")
 	@Override
-	public void unmarshallAndSaveFromHtmlFile() {
+	public void unmarshallAndSaveFromHtmlFile(@QueryParam("stagione") String stagione) {
 		logger.info("unmarshallAndSaveFromHtmlFile CALLED");
-		giornateEJB.unmarshallAndSaveFromHtmlFile();		
+		giornateEJB.unmarshallAndSaveFromHtmlFile(stagione);		
 	}
 
 	@Override
