@@ -1,4 +1,4 @@
-package it.zeze.fanta.service.ejb;
+package it.zeze.fanta.service.ejb.proxy.seam;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +22,7 @@ import it.zeze.fanta.db.DBManager;
 import it.zeze.fanta.service.definition.ejb.GiocatoriLocal;
 import it.zeze.fanta.service.definition.ejb.GiocatoriRemote;
 import it.zeze.fanta.service.definition.ejb.SquadreLocal;
+import it.zeze.fanta.service.definition.ejb.proxy.seam.GiocatoriSeamRemote;
 import it.zeze.fantaformazioneweb.entity.Giocatori;
 import it.zeze.fantaformazioneweb.entity.Squadre;
 import it.zeze.html.cleaner.HtmlCleanerUtil;
@@ -32,9 +33,9 @@ import it.zeze.util.NomiUtils;
 
 @Stateless
 @LocalBean
-public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
+public class GiocatoriSeamEJB implements GiocatoriSeamRemote {
 
-	private static final Logger log = LogManager.getLogger(GiornateEJB.class);
+	private static final Logger log = LogManager.getLogger(GiornateSeamEJB.class);
 
 	private static final String SELECT_BY_ID = "select giocatori from Giocatori giocatori where giocatori.id=:idGiocatore";
 	private static final String SELECT_ID_BY_STAGIONE = "select giocatori.id from Giocatori giocatori where giocatori.stagione=:stagione";
@@ -61,7 +62,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 	@EJB(name = "SquadreEJB")
 	private SquadreLocal squadreEJB;
 
-	@Override
+	
 	public void unmarshallAndSaveFromHtmlFile(String stagione, boolean noLike) {
 		log.info("unmarshallAndSaveFromHtmlFile, entrato");
 		String rootHTMLFiles = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_ROOT);
@@ -250,7 +251,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		log.info("unmarshallAndSaveFromHtmlFile, uscito");
 	}
 
-	@Override
+	
 	public void unmarshallAndSaveFromHtmlFileForUpdateStagione(boolean noLike) {
 		log.info("unmarshallAndSaveFromHtmlFile, entrato");
 		String rootHTMLFiles = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_ROOT);
@@ -440,7 +441,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		return idGiocatore;
 	}
 	
-	@Override
+	
 	public void insertOrUpdateGiocatore(String nomeSquadra, String nomeGiocatore, String ruolo, String stagione, boolean noLike) {
 		/*
 		 * Se il giocatore lo trovo gi� con la select per squadra,nome,ruolo
@@ -488,7 +489,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		dbManager.persist(toInsert);
 	}
 
-	@Override
+	
 	public Giocatori getGiocatoreByNomeSquadra(String nomeGiocatore, String squadra, String stagione, boolean noLike) {
 		Giocatori giocatoreToReturn = null;
 		Query query = dbManager.getEm().createQuery(SELECT_BY_NOME_AND_SQUADRA_AND_STAGIONE);
@@ -747,7 +748,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		return toInsert.getId();
 	}
 
-	@Override
+	
 	public Giocatori getGiocatoreByNomeSquadraRuolo(String nomeGiocatore, String squadra, String ruolo, String stagione, boolean noLike) {
 		Giocatori giocatoreToReturn = null;
 		List<Giocatori> resultSet = null;
@@ -862,7 +863,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		return toInsert.getId();
 	}
 
-	@Override
+	
 	public Giocatori getGiocatoreById(int idGiocatore) {
 		Giocatori giocatoreToReturn = null;
 		Query query = dbManager.getEm().createQuery(SELECT_BY_ID);

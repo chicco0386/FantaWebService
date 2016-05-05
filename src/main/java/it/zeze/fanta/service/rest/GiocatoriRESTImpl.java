@@ -58,4 +58,10 @@ public class GiocatoriRESTImpl implements GiocatoriInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Giocatori getGiocatoreById(int idGiocatore) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
