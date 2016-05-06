@@ -38,17 +38,17 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 
 	private static final String SELECT_BY_ID = "select giocatori from Giocatori giocatori where giocatori.id=:idGiocatore";
 	private static final String SELECT_ID_BY_STAGIONE = "select giocatori.id from Giocatori giocatori where giocatori.stagione=:stagione";
-	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO = "select giocatori from Giocatori giocatori where giocatori.squadre.nome=:squadra and giocatori.ruolo=:ruolo and giocatori.nome=:nomeGiocatore";
-	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO_AND_STAGIONE = "select giocatori from Giocatori giocatori where giocatori.squadre.nome=:squadra and giocatori.ruolo=:ruolo and giocatori.nome=:nomeGiocatore and giocatori.stagione=:stagione";
-	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO_LIKE = "select giocatori from Giocatori giocatori where giocatori.squadre.nome=:squadra and giocatori.ruolo=:ruolo and giocatori.nome like ':nomeGiocatore'";
-	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO_LIKE_AND_STAGIONE = "select giocatori from Giocatori giocatori where giocatori.squadre.nome=:squadra and giocatori.ruolo=:ruolo and giocatori.nome like ':nomeGiocatore' and giocatori.stagione=:stagione";
-	private static final String SELECT_BY_NOME_AND_SQUADRA = "select giocatori from Giocatori giocatori where giocatori.squadre.nome=:squadra and giocatori.nome=:nomeGiocatore";
-	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_STAGIONE = "select giocatori from Giocatori giocatori where giocatori.squadre.nome=:squadra and giocatori.nome=:nomeGiocatore and giocatori.stagione=:stagione";
-	private static final String SELECT_BY_NOME_AND_SQUADRA_LIKE = "select giocatori from Giocatori giocatori where giocatori.squadre.nome=:squadra and giocatori.nome like ':nomeGiocatore'";
-	private static final String SELECT_BY_NOME_AND_SQUADRA_LIKE_AND_STAGIONE = "select giocatori from Giocatori giocatori where giocatori.squadre.nome=:squadra and giocatori.nome like ':nomeGiocatore' and giocatori.stagione=:stagione";
+	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO = "select giocatori from Giocatori giocatori where lower(giocatori.squadre.nome)=lower(:squadra) and giocatori.ruolo=:ruolo and lower(giocatori.nome)=lower(:nomeGiocatore)";
+	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO_AND_STAGIONE = "select giocatori from Giocatori giocatori where lower(giocatori.squadre.nome)=lower(:squadra) and giocatori.ruolo=:ruolo and lower(giocatori.nome)=lower(:nomeGiocatore) and giocatori.stagione=:stagione";
+	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO_LIKE = "select giocatori from Giocatori giocatori where lower(giocatori.squadre.nome)=lower(:squadra) and giocatori.ruolo=:ruolo and lower(giocatori.nome) like lower(':nomeGiocatore')";
+	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO_LIKE_AND_STAGIONE = "select giocatori from Giocatori giocatori where lower(giocatori.squadre.nome)=lower(:squadra) and giocatori.ruolo=:ruolo and lower(giocatori.nome) like lower(':nomeGiocatore') and giocatori.stagione=:stagione";
+	private static final String SELECT_BY_NOME_AND_SQUADRA = "select giocatori from Giocatori giocatori where lower(giocatori.squadre.nome)=lower(:squadra) and lower(giocatori.nome)=lower(:nomeGiocatore)";
+	private static final String SELECT_BY_NOME_AND_SQUADRA_AND_STAGIONE = "select giocatori from Giocatori giocatori where lower(giocatori.squadre.nome)=lower(:squadra) and lower(giocatori.nome)=lower(:nomeGiocatore) and giocatori.stagione=:stagione";
+	private static final String SELECT_BY_NOME_AND_SQUADRA_LIKE = "select giocatori from Giocatori giocatori where lower(giocatori.squadre.nome)=lower(:squadra) and lower(giocatori.nome) like lower(':nomeGiocatore')";
+	private static final String SELECT_BY_NOME_AND_SQUADRA_LIKE_AND_STAGIONE = "select giocatori from Giocatori giocatori where lower(giocatori.squadre.nome)=lower(:squadra) and lower(giocatori.nome) like lower(':nomeGiocatore') and giocatori.stagione=:stagione";
 
-	private static final String SELECT_BY_NOME_AND_RUOLO = "select giocatori from Giocatori giocatori where giocatori.ruolo=:ruolo and giocatori.nome=:nomeGiocatore";
-	private static final String SELECT_BY_NOME_AND_RUOLO_AND_STAGIONE = "select giocatori from Giocatori giocatori where giocatori.ruolo=:ruolo and giocatori.nome=:nomeGiocatore and giocatori.stagione=:stagione";
+	private static final String SELECT_BY_NOME_AND_RUOLO = "select giocatori from Giocatori giocatori where giocatori.ruolo=:ruolo and lower(giocatori.nome)=lower(:nomeGiocatore)";
+	private static final String SELECT_BY_NOME_AND_RUOLO_AND_STAGIONE = "select giocatori from Giocatori giocatori where giocatori.ruolo=:ruolo and lower(giocatori.nome)=lower(:nomeGiocatore) and giocatori.stagione=:stagione";
 
 	private static final String UPDATE_STAGIONE_GIOCATORE = "update Giocatori giocatori set giocatori.stagione=:stagione where giocatori.id=:idGiocatore";
 	private static final String UPDATE_SQUADRA_GIOCATORE = "update Giocatori giocatori set giocatori.squadre.id=:idSquadra where giocatori.id=:idGiocatore";
