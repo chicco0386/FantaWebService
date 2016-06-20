@@ -112,7 +112,7 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 		log.info("unmashallAndSaveFromHtmlFile, uscito");
 	}
 
-	public void unmarshallAndSaveSingleHtmlFile(File fileToElaborate, String currentDataGiornata) {
+	private void unmarshallAndSaveSingleHtmlFile(File fileToElaborate, String currentDataGiornata) {
 		String path = fileToElaborate.getAbsolutePath();
 		log.info("unmarshallAndSaveFromHtmlFile, entrato per elaborare il file [" + path + "]");
 		try {
@@ -334,7 +334,7 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 		}
 	}
 	
-	public int deleteByIdGiornata(int idGiornata) {
+	private int deleteByIdGiornata(int idGiornata) {
 		int rowDeleted = 0;
 		Query query = dbManager.getEm().createQuery(DELETE_BY_ID_GIORNATA);
 		query.setParameter("idGiornata", idGiornata);
@@ -359,6 +359,7 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 		return toReturn;	
 	}
 	
+	@Override
 	public ProbabiliFormazioniGazzetta selectByIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
 		ProbabiliFormazioniGazzetta toReturn = null;
 		Query query = dbManager.getEm().createQuery(SELECT_BY_ID_GIOCATORE_ID_GIORNATA);

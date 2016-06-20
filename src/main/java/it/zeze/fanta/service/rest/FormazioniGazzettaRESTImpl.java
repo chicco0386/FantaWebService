@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import it.zeze.fanta.service.definition.FormazioniGazzettaInterface;
 import it.zeze.fanta.service.definition.ejb.FormazioniGazzettaLocal;
+import it.zeze.fantaformazioneweb.entity.ProbabiliFormazioniGazzetta;
 
 @Path("/formazioniGazzettaRESTImpl")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -31,6 +32,11 @@ public class FormazioniGazzettaRESTImpl implements FormazioniGazzettaInterface {
 	@Override
 	public void unmarshallAndSaveFromHtmlFile(@QueryParam("stagione") String stagione) {
 		formazioniGazzettaEJB.unmarshallAndSaveFromHtmlFile(stagione);		
+	}
+
+	@Override
+	public ProbabiliFormazioniGazzetta selectByIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
+		return formazioniGazzettaEJB.selectByIdGiocatoreIdGiornata(idGiocatore, idGiornata);
 	}
 
 }

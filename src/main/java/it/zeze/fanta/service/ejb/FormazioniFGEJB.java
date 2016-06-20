@@ -316,7 +316,7 @@ public class FormazioniFGEJB implements FormazioniFGLocal, FormazioniFGRemote {
 		dbManager.persist(instance);
 	}
 	
-	public int deleteByIdGiornata(int idGiornata) {
+	private int deleteByIdGiornata(int idGiornata) {
 		int rowDeleted = 0;
 		Query query = dbManager.getEm().createQuery(DELETE_BY_ID_GIORNATA);
 		query.setParameter("idGiornata", idGiornata);
@@ -339,6 +339,7 @@ public class FormazioniFGEJB implements FormazioniFGLocal, FormazioniFGRemote {
 		return giocatoriFormazione;
 	}
 	
+	@Override
 	public ProbabiliFormazioniFg selectByIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
 		ProbabiliFormazioniFg toReturn = null;
 		Query query = dbManager.getEm().createQuery(SELECT_BY_ID_GIOCATORE_ID_GIORNATA);

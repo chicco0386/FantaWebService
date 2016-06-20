@@ -24,33 +24,34 @@ public class CalendarioSeamEJB implements CalendarioSeamRemote {
 	@EJB(name="CalendarioEJB")
 	private CalendarioLocal calendarioEJB;
 	
+	@Override
 	public void inizializzaCalendario(String stagione) {
 		calendarioEJB.inizializzaCalendario(stagione);
 	}
 
-	
+	@Override
 	public GiornateWrap getGiornate() {
 		Giornate ejbResult = calendarioEJB.getGiornate();
 		GiornateWrap toReturn = null;
 		return toReturn;
 	}
 
-	
+	@Override
 	public void unmarshallAndSaveFromNodeCalendario(int idGiornata, TagNode calendarNode) {
 		calendarioEJB.unmarshallAndSaveFromNodeCalendario(idGiornata, calendarNode);
 	}
 
-	
+	@Override
 	public Calendario getCalendarioByIdGiornataIdSquadra(int idGiornata, int idSquadra) {
 		return calendarioEJB.getCalendarioByIdGiornataIdSquadra(idGiornata, idSquadra);
 	}
 
-	
+	@Override
 	public String getNomeSquadraAvversaria(int idGiornata, int idSquadra) {
 		return getNomeSquadraAvversaria(idGiornata, idSquadra);
 	}
 
-	
+	@Override
 	public boolean isSquadraFuoriCasa(int idGiornata, int idSquadra) {
 		return calendarioEJB.isSquadraFuoriCasa(idGiornata, idSquadra);
 	}
