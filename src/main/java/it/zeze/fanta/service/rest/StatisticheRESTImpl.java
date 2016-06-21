@@ -13,7 +13,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import it.zeze.fanta.service.definition.StatisticheInterface;
-import it.zeze.fanta.service.ejb.StatisticheEJB;
+import it.zeze.fanta.service.definition.ejb.StatisticheLocal;
 
 @Path("/statisticheRESTImpl")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -24,7 +24,7 @@ public class StatisticheRESTImpl implements StatisticheInterface {
 	private static final Logger logger = LogManager.getLogger(StatisticheRESTImpl.class);
 
 	@EJB(name = "StatisticheEJB")
-	private StatisticheEJB statisticheEJB;
+	private StatisticheLocal statisticheEJB;
 
 	@Override
 	@GET

@@ -396,7 +396,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		return toReturn;
 	}
 
-	public List<Statistiche> getStatisticheIdGiocatoreAndStagione(int idGiocatore, String stagione) {
+	private List<Statistiche> getStatisticheIdGiocatoreAndStagione(int idGiocatore, String stagione) {
 		List<Statistiche> toReturn = null;
 		String stagioneParse = giornateEJB.getStagione(stagione);
 		Query query = dbManager.getEm().createQuery(SELECT_BY_ID_GIOCATORE_STAGIONE);
