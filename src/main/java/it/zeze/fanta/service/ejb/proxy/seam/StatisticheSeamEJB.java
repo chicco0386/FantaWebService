@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import it.zeze.fanta.service.definition.ejb.StatisticheLocal;
 import it.zeze.fanta.service.definition.ejb.proxy.seam.StatisticheSeamRemote;
+import it.zeze.fantaformazioneweb.entity.Statistiche;
 
 @Stateless
 @LocalBean
@@ -22,6 +23,11 @@ public class StatisticheSeamEJB implements StatisticheSeamRemote {
 	@Override
 	public void unmarshallAndSaveFromHtmlFile(String stagione) {
 		statisticheEJB.unmarshallAndSaveFromHtmlFile(stagione);
+	}
+	
+	@Override
+	public Statistiche getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata){
+		return statisticheEJB.getStatisticheIdGiocatoreIdGiornata(idGiocatore, idGiornata);
 	}
 
 }

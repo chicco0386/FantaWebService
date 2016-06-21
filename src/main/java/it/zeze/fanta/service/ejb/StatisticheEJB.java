@@ -367,7 +367,8 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		return fantaVoto;
 	}
 
-	private Statistiche getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
+	@Override
+	public Statistiche getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
 		Statistiche toReturn = null;
 		Query query = dbManager.getEm().createQuery(SELECT_BY_ID_GIOCATORE_ID_GIORNATE);
 		query.setParameter("idGiocatore", idGiocatore);

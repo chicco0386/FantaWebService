@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import it.zeze.fanta.service.definition.StatisticheInterface;
 import it.zeze.fanta.service.definition.ejb.StatisticheLocal;
+import it.zeze.fantaformazioneweb.entity.Statistiche;
 
 @Path("/statisticheRESTImpl")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -31,6 +32,11 @@ public class StatisticheRESTImpl implements StatisticheInterface {
 	@Path("/unmarshallAndSaveFromHtmlFile")
 	public void unmarshallAndSaveFromHtmlFile(@QueryParam("stagione") String stagione) {
 		statisticheEJB.unmarshallAndSaveFromHtmlFile(stagione);
+	}
+
+	@Override
+	public Statistiche getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
+		return statisticheEJB.getStatisticheIdGiocatoreIdGiornata(idGiocatore, idGiornata);
 	}
 
 }
