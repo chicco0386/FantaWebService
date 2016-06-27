@@ -35,8 +35,6 @@ public class ProbabiliFormazioniEJB implements ProbabiliFormazioniLocal, Probabi
 	private static final String DELETE_BY_ID_GIORNATA_ID_UTENTIFORMAZIONE = "delete from ProbabiliFormazioni probabiliFormazioni where probabiliFormazioni.id.idGiornate=:idGiornata and probabiliFormazioni.id.idUtentiFormazioni=:idUtentiFormazione";
 	private static final String DELETE_BY_ID_UTENTI_FORMAZIONI = "DELETE FROM ProbabiliFormazioni WHERE id.idUtentiFormazioni=:idUtentiFormazioni";
 
-	private List<ProbabiliFormazioni> resultList;
-
 	@Override
 	public List<ProbabiliFormazioni> getRisultati(int idUtentiFormazione, String stagione, int numeroGiornata) {
 		List<ProbabiliFormazioni> response = new ArrayList<ProbabiliFormazioni>();
@@ -44,7 +42,6 @@ public class ProbabiliFormazioniEJB implements ProbabiliFormazioniLocal, Probabi
 			int idGiornata = giornateEJB.getIdGiornata(numeroGiornata, stagione);
 			response = getProbFormazioniByGiornataUtentiFormazione(idGiornata, idUtentiFormazione);
 		}
-		this.resultList = response;
 		return response;
 	}
 
@@ -85,16 +82,6 @@ public class ProbabiliFormazioniEJB implements ProbabiliFormazioniLocal, Probabi
 		ProbabiliFormazioni probabiliFormazioni = new ProbabiliFormazioni();
 		probabiliFormazioni.setId(probabiliFormazioniId);
 		dbManager.persist(probabiliFormazioni);
-	}
-
-	@Override
-	public List<ProbabiliFormazioni> getResultList() {
-		return resultList;
-	}
-
-	@Override
-	public void setResultList(List<ProbabiliFormazioni> resultList) {
-		this.resultList = resultList;
 	}
 
 	/**

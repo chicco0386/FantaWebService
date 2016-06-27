@@ -55,25 +55,6 @@ public class ProbabiliFormazioniSeamEJB implements ProbabiliFormazioniSeamRemote
 	}
 
 	@Override
-	public List<ProbabiliFormazioniWrap> getResultList() {
-		List<ProbabiliFormazioni> responseEJB = probabiliFormazioniEJB.getResultList();
-		List<ProbabiliFormazioniWrap> toReturn = new ArrayList<ProbabiliFormazioniWrap>();
-		for (ProbabiliFormazioni current : responseEJB){
-			toReturn.add(new ProbabiliFormazioniWrap(current));
-		}
-		return toReturn;
-	}
-
-	@Override
-	public void setResultList(List<ProbabiliFormazioniWrap> resultList) {
-		List<ProbabiliFormazioni> toReturn = new ArrayList<ProbabiliFormazioni>();
-		for (ProbabiliFormazioniWrap current : resultList){
-			toReturn.add(current.unwrap());
-		}
-		probabiliFormazioniEJB.setResultList(toReturn);
-	}
-
-	@Override
 	public boolean isFantaGazzettaSource(int probabilita) {
 		return probabiliFormazioniEJB.isFantaGazzettaSource(probabilita);
 	}
