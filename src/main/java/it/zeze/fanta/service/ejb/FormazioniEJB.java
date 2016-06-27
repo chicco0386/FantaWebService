@@ -10,7 +10,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -66,8 +66,6 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 	private static final String UPDATE_PROB_PANC_BY_ID_UTENTI_FORMAZIONI_ID_GIOCATORE = "update Formazioni formazioni set formazioni.id.probPanchina=:probPanchina where formazioni.id.idUtentiFormazioni=:idUtentiFormazioni and formazioni.id.idGiocatore=:idGiocatore";
 	private static final String DELETE_GIOCATORE_BY_ID_UTENTI_FORMAZIONI_ID_GIOCATORE = "DELETE FROM Formazioni formazioni WHERE formazioni.id.idUtentiFormazioni=:idUtentiFormazioni and formazioni.id.idGiocatore=:idGiocatore";
 	private static final String DELETE_GIOCATORE_BY_ID_UTENTI_FORMAZIONI = "DELETE FROM Formazioni formazioni WHERE formazioni.id.idUtentiFormazioni=:idUtentiFormazioni";
-
-	private Formazioni formazioni;
 
 	@Override
 	public ServiceResponse insertFormazioneMercato(String nomeFormazione, List<GiocatoriMercato> listaGiocatori, int idUtente, int idUtenteFormazioneToUpdate, BigDecimal crediti) {
@@ -343,9 +341,5 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 			}
 		}
 		return trovatoDuplicati;
-	}
-
-	public Formazioni getFormazioni() {
-		return formazioni;
 	}
 }
