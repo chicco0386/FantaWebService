@@ -1,5 +1,7 @@
 package it.zeze.fanta.service.rest;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -14,6 +16,8 @@ import org.apache.log4j.Logger;
 
 import it.zeze.fanta.service.definition.StatisticheInterface;
 import it.zeze.fanta.service.definition.ejb.StatisticheLocal;
+import it.zeze.fantaformazioneweb.entity.Giocatori;
+import it.zeze.fantaformazioneweb.entity.Giornate;
 import it.zeze.fantaformazioneweb.entity.Statistiche;
 
 @Path("/statisticheRESTImpl")
@@ -37,6 +41,18 @@ public class StatisticheRESTImpl implements StatisticheInterface {
 	@Override
 	public Statistiche getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
 		return statisticheEJB.getStatisticheIdGiocatoreIdGiornata(idGiocatore, idGiornata);
+	}
+
+	@Override
+	public List<Statistiche> initResultList(Giornate giornate, Giocatori giocatori, String orderColumn, String orderDir) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Statistiche> resetResumeStatistiche(List<Statistiche> resultList, Giornate giornate, Giocatori giocatori, String orderColumn, String orderDir) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
