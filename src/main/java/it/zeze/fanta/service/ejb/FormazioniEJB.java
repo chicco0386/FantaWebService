@@ -332,7 +332,7 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 
 	private boolean controllaGiocatoriDuplicatiMercato(List<GiocatoriMercato> listaGiocatori) {
 		boolean trovatoDuplicati = false;
-		Giocatori currentGiocatori;
+		GiocatoriMercato currentGiocatori;
 		for (int i = 0; i < listaGiocatori.size() && !trovatoDuplicati; i++) {
 			currentGiocatori = listaGiocatori.get(i);
 			int frequency = Collections.frequency(listaGiocatori, currentGiocatori);
