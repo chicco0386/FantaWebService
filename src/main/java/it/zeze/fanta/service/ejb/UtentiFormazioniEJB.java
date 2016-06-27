@@ -42,8 +42,6 @@ public class UtentiFormazioniEJB implements UtentiFormazioniLocal, UtentiFormazi
 	private static final String SELECT_BY_ID_AND_UTENTE_ID = "select utentiFormazioni from UtentiFormazioni utentiFormazioni where utentiFormazioni.id=:idUtenteFormazione and utentiFormazioni.utenti.id=:idUtente";
 	private static final String DELETE_BY_ID_AND_UTENTE_ID = "delete from UtentiFormazioni utentiFormazioni where utentiFormazioni.id=:idUtenteFormazione and utentiFormazioni.utenti.id=:idUtente";
 
-	private UtentiFormazioni utentiFormazioni = new UtentiFormazioni();
-
 	@Override
 	public ServiceResponse insertUtenteFormazione(String nomeFormazione, int idUtente, BigDecimal crediti) {
 		log.info("Start inserimento formazione [" + nomeFormazione + "] dell'utente con id [" + idUtente + "]");
@@ -155,11 +153,6 @@ public class UtentiFormazioniEJB implements UtentiFormazioniLocal, UtentiFormazi
 		UtentiFormazioni currentUF = getUtentiFormazioniByIdAndIdUtente(idUtenteFormazione, idUtente);
 		String nomeCopia = currentUF.getNomeFormazione().concat("_copy");
 		log.info("TODO COPY");
-	}
-
-	@Override
-	public UtentiFormazioni getUtentiFormazioni() {
-		return utentiFormazioni;
 	}
 
 	@Override
