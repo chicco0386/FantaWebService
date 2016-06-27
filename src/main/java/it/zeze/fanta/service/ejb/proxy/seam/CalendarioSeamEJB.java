@@ -48,7 +48,7 @@ public class CalendarioSeamEJB implements CalendarioSeamRemote {
 
 	@Override
 	public String getNomeSquadraAvversaria(int idGiornata, int idSquadra) {
-		return getNomeSquadraAvversaria(idGiornata, idSquadra);
+		return calendarioEJB.getNomeSquadraAvversaria(idGiornata, idSquadra);
 	}
 
 	@Override

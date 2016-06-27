@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import it.zeze.fanta.service.definition.ejb.StatisticheLocal;
 import it.zeze.fanta.service.definition.ejb.proxy.seam.StatisticheSeamRemote;
 import it.zeze.fantaformazioneweb.entity.Statistiche;
+import it.zeze.fantaformazioneweb.entity.wrapper.StatisticheWrap;
 
 @Stateless
 @LocalBean
@@ -24,10 +25,13 @@ public class StatisticheSeamEJB implements StatisticheSeamRemote {
 	public void unmarshallAndSaveFromHtmlFile(String stagione) {
 		statisticheEJB.unmarshallAndSaveFromHtmlFile(stagione);
 	}
-	
+
 	@Override
-	public Statistiche getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata){
-		return statisticheEJB.getStatisticheIdGiocatoreIdGiornata(idGiocatore, idGiornata);
+	public StatisticheWrap getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
+		StatisticheWrap toReturn = null;
+		Statistiche ejbResp = statisticheEJB.getStatisticheIdGiocatoreIdGiornata(idGiocatore, idGiornata);
+		toReturn = new StatisticheWrap(ejbResp);
+		return toReturn;
 	}
 
 }
