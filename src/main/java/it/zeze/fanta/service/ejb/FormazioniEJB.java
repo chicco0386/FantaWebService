@@ -10,11 +10,11 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import it.zeze.fanta.db.DBManager;
+import it.zeze.fanta.service.bean.FormazioneBeanCommon;
 import it.zeze.fanta.service.bean.GiocatoriMercato;
 import it.zeze.fanta.service.bean.MessageSeverity;
 import it.zeze.fanta.service.bean.ServiceResponse;
@@ -56,7 +56,7 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 	ProbabiliFormazioniLocal probabiliFormazioniEJB;
 
 	@EJB(name = "FormazioneMercatoEJB")
-	FormazioneMercatoLocal formazioneBean;
+	FormazioneMercatoLocal formazioneMercatoBean;
 
 	@EJB(name = "GiornateEJB")
 	private GiornateLocal giornateEJB;
@@ -87,9 +87,11 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 			GiocatoriMercato currentGiocatore;
 			UtentiFormazioni utenteFormazione;
 			List<GiocatoriMercato> listaGiocatoriMod = new ArrayList<GiocatoriMercato>(listaGiocatori);
-			formazioneBean.setDoInit(true);
-			formazioneBean.initListaGiocatoriMercato(idUtente);
-			List<GiocatoriMercato> listGiocatoriAttualiInFormazione = formazioneBean.getListaGiocatoriMercato();
+			FormazioneBeanCommon common = new FormazioneBeanCommon();
+			common.setDoInit(true);
+			common.setIdUtenteFormazioneToInit(idUtenteFormazioneToUpdate);
+			common = formazioneMercatoBean.initListaGiocatoriMercato(common, idUtente);
+			List<GiocatoriMercato> listGiocatoriAttualiInFormazione = common.getListaGiocatoriMercato();
 			log.info("Init [" + listGiocatoriAttualiInFormazione.size() + "]");
 			if (idUtenteFormazioneToUpdate == -1) {
 				utenteFormazione = (UtentiFormazioni) utentiFormazioniEJB.insertUtenteFormazione(nomeFormazione, idUtente, crediti).getObjectResponse();
@@ -99,14 +101,17 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 			}
 			if (utenteFormazione != null) {
 				// Cancellazione utenti
-				List<GiocatoriMercato> listGiocToRemove = (List<GiocatoriMercato>) CollectionUtils.subtract(listGiocatoriAttualiInFormazione, listaGiocatoriMod);
+				List<GiocatoriMercato> listGiocToRemove = new ArrayList<GiocatoriMercato>(listGiocatoriAttualiInFormazione);
+				listGiocToRemove.removeAll(listaGiocatoriMod);
+//				List<GiocatoriMercato> listGiocToRemove = (List<GiocatoriMercato>) CollectionUtils.subtract(listGiocatoriAttualiInFormazione, listaGiocatoriMod);
 				for (int i = 0; i < listGiocToRemove.size(); i++) {
 					currentGiocatore = listGiocToRemove.get(i);
 					log.info("currentGiocatoreToRemove: " + currentGiocatore.getNome());
 					deleteGiocatoreByIdFormazioneAndIdGiocatore(utenteFormazione.getId(), currentGiocatore.getId());
 				}
 				// Inserisco eventuali nuovi giocatori
-				listaGiocatoriMod = (List<GiocatoriMercato>) CollectionUtils.subtract(listaGiocatoriMod, listGiocToRemove);
+				listaGiocatoriMod.removeAll(listGiocatoriAttualiInFormazione);
+//				listaGiocatoriMod = (List<GiocatoriMercato>) CollectionUtils.subtract(listaGiocatoriMod, listGiocToRemove);
 				for (int i = 0; i < listaGiocatoriMod.size(); i++) {
 					currentGiocatore = listaGiocatoriMod.get(i);
 					if (!listGiocatoriAttualiInFormazione.contains(currentGiocatore)) {
@@ -158,9 +163,11 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 			Giocatori currentGiocatore;
 			UtentiFormazioni utenteFormazione;
 			List<Giocatori> listaGiocatoriMod = new ArrayList<Giocatori>(listaGiocatori);
-			formazioneBean.setDoInit(true);
-			formazioneBean.initListaGiocatori(idUtente);
-			List<Giocatori> listGiocatoriAttualiInFormazione = formazioneBean.getListaGiocatori();
+			FormazioneBeanCommon common = new FormazioneBeanCommon();
+			common.setDoInit(true);
+			common.setIdUtenteFormazioneToInit(idUtenteFormazioneToUpdate);
+			common = formazioneMercatoBean.initListaGiocatori(common, idUtente);
+			List<Giocatori> listGiocatoriAttualiInFormazione = common.convertListaGiocatori();
 			log.info("Init [" + listGiocatoriAttualiInFormazione.size() + "]");
 			if (idUtenteFormazioneToUpdate == -1) {
 				utenteFormazione = (UtentiFormazioni) utentiFormazioniEJB.insertUtenteFormazione(nomeFormazione, idUtente, null).getObjectResponse();
@@ -170,14 +177,17 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 			}
 			if (utenteFormazione != null) {
 				// Cancellazione utenti
-				List<Giocatori> listGiocToRemove = (List<Giocatori>) CollectionUtils.subtract(listGiocatoriAttualiInFormazione, listaGiocatoriMod);
+				List<Giocatori> listGiocToRemove = new ArrayList<Giocatori>(listGiocatoriAttualiInFormazione);
+				listGiocToRemove.removeAll(listaGiocatoriMod);
+//				List<Giocatori> listGiocToRemove = (List<Giocatori>) CollectionUtils.subtract(listGiocatoriAttualiInFormazione, listaGiocatoriMod);
 				for (int i = 0; i < listGiocToRemove.size(); i++) {
 					currentGiocatore = listGiocToRemove.get(i);
 					log.info("currentGiocatoreToRemove: " + currentGiocatore.getNome());
 					deleteGiocatoreByIdFormazioneAndIdGiocatore(utenteFormazione.getId(), currentGiocatore.getId());
 				}
 				// Inserisco eventuali nuovi giocatori
-				listaGiocatoriMod = (List<Giocatori>) CollectionUtils.subtract(listaGiocatoriMod, listGiocToRemove);
+				listaGiocatoriMod.removeAll(listGiocatoriAttualiInFormazione);
+//				listaGiocatoriMod = (List<Giocatori>) CollectionUtils.subtract(listaGiocatoriMod, listGiocToRemove);
 				for (int i = 0; i < listaGiocatoriMod.size(); i++) {
 					currentGiocatore = listaGiocatoriMod.get(i);
 					if (!listGiocatoriAttualiInFormazione.contains(currentGiocatore)) {

@@ -1,7 +1,6 @@
 package it.zeze.fanta.service.ejb;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,14 +11,15 @@ import javax.ejb.Stateless;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import it.zeze.fanta.service.bean.FormazioneBeanCommon;
 import it.zeze.fanta.service.bean.GiocatoriMercato;
 import it.zeze.fanta.service.definition.ejb.FormazioneMercatoLocal;
 import it.zeze.fanta.service.definition.ejb.FormazioneMercatoRemote;
 import it.zeze.fanta.service.definition.ejb.FormazioniLocal;
 import it.zeze.fanta.service.definition.ejb.UtentiFormazioniLocal;
 import it.zeze.fantaformazioneweb.entity.Formazioni;
-import it.zeze.fantaformazioneweb.entity.Giocatori;
 import it.zeze.fantaformazioneweb.entity.UtentiFormazioni;
+import it.zeze.fantaformazioneweb.entity.wrapper.GiocatoriWrap;
 import it.zeze.util.GiocatoriComparator;
 
 @Stateless
@@ -30,7 +30,7 @@ public class FormazioneMercatoEJB implements FormazioneMercatoLocal, FormazioneM
 	 * Classe FormazioniBea in SEAM
 	 */
 
-	private static final Logger log = LogManager.getLogger(CalendarioEJB.class);
+	private static final Logger log = LogManager.getLogger(FormazioneMercatoEJB.class);
 
 	@EJB(name="UtentiFormazioniEJB")
 	private UtentiFormazioniLocal utentiFormazioniEJB;
@@ -38,25 +38,14 @@ public class FormazioneMercatoEJB implements FormazioneMercatoLocal, FormazioneM
 	@EJB(name="FormazioniEJB")
 	private FormazioniLocal formazioniEJB;
 
-	private List<Giocatori> listaGiocatori = new ArrayList<Giocatori>();
-
-	private boolean doInit = true;
-	private boolean doInitCrediti = true;
-
-	private int idUtenteFormazioneToInit = -1;
-
-	private List<GiocatoriMercato> listaGiocatoriMercato = new ArrayList<GiocatoriMercato>();
-	private BigDecimal prezzoAcquisto = BigDecimal.ZERO;
-	private BigDecimal creditiResidui = BigDecimal.ZERO;
-
 	@Override
-	public void initListaGiocatoriMercato(int idUtente) {
-		log.info("Init listaGiocatoriMercato doInit [" + doInit + "]");
-		if (idUtenteFormazioneToInit != -1) {
-			if (doInit) {
-				if (utentiFormazioniEJB.esisteUtentiFormazioni(idUtenteFormazioneToInit, idUtente)) {
-					listaGiocatoriMercato.clear();
-					List<Formazioni> formazioni = formazioniEJB.selectFormazioniByIdUtenteFormazioni(idUtenteFormazioneToInit);
+	public FormazioneBeanCommon initListaGiocatoriMercato(FormazioneBeanCommon common, int idUtente) {
+		log.info("Init listaGiocatoriMercato doInit [" + common.isDoInit() + "]");
+		if (common.getIdUtenteFormazioneToInit() != -1) {
+			if (common.isDoInit()) {
+				if (utentiFormazioniEJB.esisteUtentiFormazioni(common.getIdUtenteFormazioneToInit(), idUtente)) {
+					common.getListaGiocatoriMercato().clear();
+					List<Formazioni> formazioni = formazioniEJB.selectFormazioniByIdUtenteFormazioni(common.getIdUtenteFormazioneToInit());
 					for (int i = 0; i < formazioni.size(); i++) {
 						GiocatoriMercato giocatoreMercato = new GiocatoriMercato(formazioni.get(i).getGiocatori());
 						if (formazioni.get(i).getPrezzoAcquisto() == null) {
@@ -64,146 +53,49 @@ public class FormazioneMercatoEJB implements FormazioneMercatoLocal, FormazioneM
 						} else {
 							giocatoreMercato.setPrezzoAcquisto(formazioni.get(i).getPrezzoAcquisto());
 						}
-						listaGiocatoriMercato.add(giocatoreMercato);
+						common.getListaGiocatoriMercato().add(giocatoreMercato);
 					}
 					// lo setto in modo da nn rifare l'init se eseguo un action
 					// ajax sulla pagina
-					doInit = false;
+					common.setDoInit(false);
 				}
 			}
 		}
-		Collections.sort(listaGiocatoriMercato, Collections.reverseOrder(new GiocatoriComparator()));
+		Collections.sort(common.getListaGiocatoriMercato(), Collections.reverseOrder(new GiocatoriComparator()));
+		return common;
 	}
 
 	@Override
-	public void initListaGiocatori(int idUtente) {
-		log.info("Init listaGiocatori doInit [" + doInit + "]");
-		if (idUtenteFormazioneToInit != -1) {
-			if (doInit) {
-				if (utentiFormazioniEJB.esisteUtentiFormazioni(idUtenteFormazioneToInit, idUtente)) {
-					listaGiocatori.clear();
-					List<Formazioni> formazioni = formazioniEJB.selectFormazioniByIdUtenteFormazioni(idUtenteFormazioneToInit);
+	public FormazioneBeanCommon initListaGiocatori(FormazioneBeanCommon common, int idUtente) {
+		log.info("Init listaGiocatori doInit [" + common.isDoInit() + "]");
+		if (common.getIdUtenteFormazioneToInit() != -1) {
+			if (common.isDoInit()) {
+				if (utentiFormazioniEJB.esisteUtentiFormazioni(common.getIdUtenteFormazioneToInit(), idUtente)) {
+					common.getListaGiocatori().clear();
+					List<Formazioni> formazioni = formazioniEJB.selectFormazioniByIdUtenteFormazioni(common.getIdUtenteFormazioneToInit());
 					for (int i = 0; i < formazioni.size(); i++) {
-						listaGiocatori.add(formazioni.get(i).getGiocatori());
+						common.getListaGiocatori().add(new GiocatoriWrap(formazioni.get(i).getGiocatori()));
 					}
 					// lo setto in modo da nn rifare l'init se eseguo un action
 					// ajax sulla pagina
-					doInit = false;
+					common.setDoInit(false);
 				}
 			}
 		}
-		Collections.sort(listaGiocatori, Collections.reverseOrder(new GiocatoriComparator()));
+		Collections.sort(common.getListaGiocatori(), Collections.reverseOrder(new GiocatoriComparator()));
+		return common;
 	}
 
 	@Override
-	public void addGiocatoreMercato(Giocatori giocatoreToInsert, BigDecimal prezzoAcquisto) {
-		if (!listaGiocatoriMercato.contains(giocatoreToInsert)) {
-			log.info("Prezzo acquisto: [" + prezzoAcquisto.toPlainString() + "]");
-			GiocatoriMercato mercato = new GiocatoriMercato(giocatoreToInsert);
-			mercato.setPrezzoAcquisto(prezzoAcquisto);
-			listaGiocatoriMercato.add(mercato);
-			creditiResidui = creditiResidui.subtract(mercato.getPrezzoAcquisto());
-			this.prezzoAcquisto = BigDecimal.ZERO;
-		}
-	}
-
-	@Override
-	public void add(Giocatori giocatoreToInsert) {
-		if (!listaGiocatori.contains(giocatoreToInsert)) {
-			listaGiocatori.add(giocatoreToInsert);
-		}
-	}
-
-	@Override
-	public List<Giocatori> getListaGiocatori() {
-		return listaGiocatori;
-	}
-
-	@Override
-	public void setListaGiocatori(List<Giocatori> listaGiocatori) {
-		this.listaGiocatori = listaGiocatori;
-	}
-
-	@Override
-	public int getIdUtenteFormazioneToInit() {
-		return idUtenteFormazioneToInit;
-	}
-
-	@Override
-	public boolean isDoInit() {
-		return doInit;
-	}
-
-	@Override
-	public void setDoInit(boolean doInit) {
-		this.doInit = doInit;
-	}
-
-	@Override
-	public boolean isDoInitCrediti() {
-		return doInitCrediti;
-	}
-
-	@Override
-	public void setDoInitCrediti(boolean doInitCrediti) {
-		this.doInitCrediti = doInitCrediti;
-	}
-
-	@Override
-	public void setIdUtenteFormazioneToInit(int idUtenteFormazioneToInit) {
-		this.idUtenteFormazioneToInit = idUtenteFormazioneToInit;
-	}
-
-	@Override
-	public List<GiocatoriMercato> getListaGiocatoriMercato() {
-		return listaGiocatoriMercato;
-	}
-
-	@Override
-	public void setListaGiocatoriMercato(List<GiocatoriMercato> listaGiocatoriMercato) {
-		this.listaGiocatoriMercato = listaGiocatoriMercato;
-	}
-
-	@Override
-	public BigDecimal getPrezzoAcquisto() {
-		return prezzoAcquisto;
-	}
-
-	@Override
-	public void setPrezzoAcquisto(BigDecimal prezzoAcquisto) {
-		this.prezzoAcquisto = prezzoAcquisto;
-	}
-
-	@Override
-	public BigDecimal getCreditiResidui() {
-		return creditiResidui;
-	}
-
-	@Override
-	public void setCreditiResidui(BigDecimal creditiResidui) {
-		this.creditiResidui = creditiResidui;
-	}
-
-	@Override
-	public void removeMercato(GiocatoriMercato giocatoreToRemove, BigDecimal prezzo) {
-		listaGiocatoriMercato.remove(giocatoreToRemove);
-		creditiResidui = creditiResidui.add(prezzo);
-	}
-
-	@Override
-	public void remove(Giocatori giocatoreToRemove) {
-		listaGiocatori.remove(giocatoreToRemove);
-	}
-
-	@Override
-	public void initCreditiResidui(int idUtentiFormazioni, int idUtente) {
-		log.info("initCreditiResidui doInitCrediti [" + doInitCrediti + "]");
+	public FormazioneBeanCommon initCreditiResidui(FormazioneBeanCommon common, int idUtentiFormazioni, int idUtente) {
+		log.info("initCreditiResidui doInitCrediti [" + common.isDoInitCrediti() + "]");
 		UtentiFormazioni utForm = utentiFormazioniEJB.getUtentiFormazioniByIdAndIdUtente(idUtentiFormazioni, idUtente);
 		if (utForm.getCrediti() != null) {
-			this.creditiResidui = utForm.getCrediti();
+			common.setCreditiResidui(utForm.getCrediti());
 		} else {
-			this.creditiResidui = BigDecimal.ZERO;
+			common.setCreditiResidui(BigDecimal.ZERO);
 		}
-		this.doInitCrediti = false;
+		common.setDoInitCrediti(false);
+		return common;
 	}
 }
