@@ -94,10 +94,14 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 			List<GiocatoriMercato> listGiocatoriAttualiInFormazione = common.getListaGiocatoriMercato();
 			log.info("Init [" + listGiocatoriAttualiInFormazione.size() + "]");
 			if (idUtenteFormazioneToUpdate == -1) {
-				utenteFormazione = (UtentiFormazioni) utentiFormazioniEJB.insertUtenteFormazione(nomeFormazione, idUtente, crediti).getObjectResponse();
+				ServiceResponse ejbResp = utentiFormazioniEJB.insertUtenteFormazione(nomeFormazione, idUtente, crediti);
+				toReturn.addAllMessage(ejbResp.getMessageResponse());
+				utenteFormazione = (UtentiFormazioni) ejbResp.getObjectResponse();
 				listGiocatoriAttualiInFormazione.clear();
 			} else {
-				utenteFormazione = (UtentiFormazioni) utentiFormazioniEJB.updateUtenteFormazione(idUtenteFormazioneToUpdate, nomeFormazione, idUtente, crediti).getObjectResponse();
+				ServiceResponse ejbResp = utentiFormazioniEJB.updateUtenteFormazione(idUtenteFormazioneToUpdate, nomeFormazione, idUtente, crediti);
+				toReturn.addAllMessage(ejbResp.getMessageResponse());
+				utenteFormazione = (UtentiFormazioni) ejbResp.getObjectResponse();
 			}
 			if (utenteFormazione != null) {
 				// Cancellazione utenti
@@ -170,10 +174,14 @@ public class FormazioniEJB implements FormazioniLocal, FormazioniRemote {
 			List<Giocatori> listGiocatoriAttualiInFormazione = common.convertListaGiocatori();
 			log.info("Init [" + listGiocatoriAttualiInFormazione.size() + "]");
 			if (idUtenteFormazioneToUpdate == -1) {
-				utenteFormazione = (UtentiFormazioni) utentiFormazioniEJB.insertUtenteFormazione(nomeFormazione, idUtente, null).getObjectResponse();
+				ServiceResponse ejbResp = utentiFormazioniEJB.insertUtenteFormazione(nomeFormazione, idUtente, null);
+				toReturn.addAllMessage(ejbResp.getMessageResponse());
+				utenteFormazione = (UtentiFormazioni) ejbResp.getObjectResponse();
 				listGiocatoriAttualiInFormazione.clear();
 			} else {
-				utenteFormazione = (UtentiFormazioni) utentiFormazioniEJB.updateUtenteFormazione(idUtenteFormazioneToUpdate, nomeFormazione, idUtente, null).getObjectResponse();
+				ServiceResponse ejbResp = utentiFormazioniEJB.updateUtenteFormazione(idUtenteFormazioneToUpdate, nomeFormazione, idUtente, null);
+				toReturn.addAllMessage(ejbResp.getMessageResponse());
+				utenteFormazione = (UtentiFormazioni) ejbResp.getObjectResponse();
 			}
 			if (utenteFormazione != null) {
 				// Cancellazione utenti
