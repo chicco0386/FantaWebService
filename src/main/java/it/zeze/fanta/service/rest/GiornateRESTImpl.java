@@ -81,7 +81,7 @@ public class GiornateRESTImpl implements GiornateInterface {
 	}
 
 	@Override
-	public List<Giornate> getGiornateAll() {
+	public List<Giornate> getGiornateAll(String stagione) {
 		// TODO Auto-generated method stub
 		return null;
 	}

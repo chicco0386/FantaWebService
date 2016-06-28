@@ -72,16 +72,16 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		// Per tutte le giornate presenti su DB controllo se esiste il relativo
 		// file e lo elaboro
 		String pathCompletoFileSquadre;
-		List<Giornate> listaGiornate = giornateEJB.getGiornateAll();
+		List<Giornate> listaGiornate = giornateEJB.getGiornateAll(stagione);
 		Giornate currentGiornata;
 		File currentFileGiornata;
 		for (int i = 0; i < listaGiornate.size(); i++) {
 			currentGiornata = listaGiornate.get(i);
-			pathCompletoFileSquadre = rootHTMLFiles + createNomeFileGiornata(nomeFileSquadre, String.valueOf(currentGiornata.getId()));
+			pathCompletoFileSquadre = rootHTMLFiles + createNomeFileGiornata(nomeFileSquadre, String.valueOf(currentGiornata.getNumeroGiornata()));
 			currentFileGiornata = new File(pathCompletoFileSquadre);
 			if (currentFileGiornata.exists()) {
 				try {
-					unmarshallAndSaveFromHtmlFile(currentFileGiornata, String.valueOf(currentGiornata.getId()), stagione);
+					unmarshallAndSaveFromHtmlFile(currentFileGiornata, String.valueOf(currentGiornata.getNumeroGiornata()), stagione);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -321,6 +321,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 			giocatoriEJB.insertOrUpdateGiocatore(currentNomeSquadra, currentGiocatoreNome, currentGiocatoreRuolo, currentStagione, noLike);
 			currentGiocatoreDB = giocatoriEJB.getGiocatoreByNomeSquadraRuolo(currentGiocatoreNome, currentNomeSquadra, currentGiocatoreRuolo, currentStagione, noLike);
 		}
+		if (currentGiocatoreDB != null){
 		log.info("Inserisco statistiche giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "]");
 		StatisticheId statisticheId = new StatisticheId();
 		statisticheId.setIdGiocatore(currentGiocatoreDB.getId());
@@ -341,6 +342,9 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		Statistiche statisticheToInsert = new Statistiche();
 		statisticheToInsert.setId(statisticheId);
 		dbManager.persist(statisticheToInsert);
+		} else {
+			log.error("******* ERRORE durante l'inserimento del giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "] *******");
+		}
 	}
 
 	private BigDecimal calcolaFantaVoto(BigDecimal mediaVoto, int ammonito, int espulso, int assist, int autoreti, int goalFatti, int rigoreFatto, int rigoreSbagliato, int rigoreSubito, int rigoreParato) {

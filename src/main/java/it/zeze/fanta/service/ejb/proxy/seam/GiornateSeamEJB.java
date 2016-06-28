@@ -64,8 +64,8 @@ public class GiornateSeamEJB implements GiornateSeamRemote {
 	}
 	
 	@Override
-	public List<Giornate> getGiornateAll(){
-		return giornateEJB.getGiornateAll();
+	public List<Giornate> getGiornateAll(String stagione){
+		return giornateEJB.getGiornateAll(stagione);
 	}
 
 	@Override

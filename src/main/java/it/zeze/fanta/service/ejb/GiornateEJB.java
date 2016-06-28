@@ -274,10 +274,11 @@ public class GiornateEJB implements GiornateLocal, GiornateRemote {
 		return toReturn;
 	}
 	
-	public List<Giornate> getGiornateAll(){
+	public List<Giornate> getGiornateAll(String stagione){
 		List<Giornate> toReturn = new ArrayList<Giornate>();
-		String qryString = "SELECT g FROM Giornate g";
+		String qryString = "SELECT g FROM Giornate g WHERE g.stagione = :stagione order by g.numeroGiornata";
 		Query query = dbManager.getEm().createQuery(qryString);
+		query.setParameter("stagione", stagione);
 		toReturn = (List<Giornate>) query.getResultList();
 		return toReturn;
 	}
