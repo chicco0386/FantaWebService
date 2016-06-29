@@ -18,5 +18,6 @@ public class DBManager {
 
 	public void persist(Object toPersist){
 		em.persist(toPersist);
+		em.flush();
 	}
 }

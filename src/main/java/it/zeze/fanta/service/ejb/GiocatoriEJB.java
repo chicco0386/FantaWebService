@@ -447,6 +447,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 		 * allora nn faccio niente
 		 */
 		// Prima cerco solo nome giocatore e squadra
+		nomeGiocatore = NomiUtils.pulisciNome(nomeGiocatore);
 		Giocatori existingGiocatore = getGiocatoreByNomeSquadra(nomeGiocatore, nomeSquadra, stagione, noLike);
 		if (existingGiocatore == null) {
 			existingGiocatore = getGiocatoreByNomeSquadraRuolo(nomeGiocatore, nomeSquadra, ruolo, stagione, noLike);
@@ -491,6 +492,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 	@Override
 	public Giocatori getGiocatoreByNomeSquadra(String nomeGiocatore, String squadra, String stagione, boolean noLike) {
 		Giocatori giocatoreToReturn = null;
+		nomeGiocatore = NomiUtils.pulisciNome(nomeGiocatore);
 		Query query = dbManager.getEm().createQuery(SELECT_BY_NOME_AND_SQUADRA_AND_STAGIONE);
 		query.setParameter("squadra", squadra.trim());
 		query.setParameter("nomeGiocatore", NomiUtils.pulisciNome(nomeGiocatore));
@@ -510,7 +512,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 
 	private Giocatori getGiocatoreByNomeSquadraLike(String nomeGiocatore, String squadra, String stagione) {
 		Giocatori giocatoreToReturn = null;
-		String nomeGiocatoreToSearch = this.preparaStringaRicercaLike(nomeGiocatore);
+		String nomeGiocatoreToSearch = this.preparaStringaRicercaLike(NomiUtils.pulisciNome(nomeGiocatore));
 		String queryString = StringUtils.replace(SELECT_BY_NOME_AND_SQUADRA_LIKE_AND_STAGIONE, ":nomeGiocatore", nomeGiocatoreToSearch.trim());
 		Query query = dbManager.getEm().createQuery(queryString);
 		query.setParameter("squadra", squadra.trim());
@@ -564,6 +566,17 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 				stringaLikeToReturn = StringUtils.substringAfter(stringaLikeToReturn, "'").concat("%");
 			} else {
 				stringaLikeToReturn = "%".concat(StringUtils.substringBefore(stringaLikeToReturn, "'"));
+			}
+		}
+		// Se ci sono dei punti all'interno del nome (solitamente e' il nome del giocatore, es. m.ciofani o d.ciofani)
+		if (StringUtils.contains(stringaRicerca.trim(), ".")) {
+			// Rimuovo eventuali spazi all'interno
+			String nomeGiocatoreBefore = StringUtils.substringBefore(StringUtils.deleteWhitespace(stringaRicerca).trim(), ".");
+			String nomeGiocatoreAfter = StringUtils.substringAfter(StringUtils.deleteWhitespace(stringaRicerca), ".");
+			if (nomeGiocatoreBefore.length() > nomeGiocatoreAfter.length()) {
+				stringaLikeToReturn = "%".concat(nomeGiocatoreBefore).concat("%");
+			} else {
+				stringaLikeToReturn = "%".concat(nomeGiocatoreAfter).concat("%");
 			}
 		}
 		return stringaLikeToReturn;
@@ -751,6 +764,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 	public Giocatori getGiocatoreByNomeSquadraRuolo(String nomeGiocatore, String squadra, String ruolo, String stagione, boolean noLike) {
 		Giocatori giocatoreToReturn = null;
 		List<Giocatori> resultSet = null;
+		nomeGiocatore = NomiUtils.pulisciNome(nomeGiocatore);
 		Giocatori existingGiocatore = getGiocatoreByNomeSquadra(nomeGiocatore, squadra, stagione, noLike);
 		if (existingGiocatore == null) {
 			Query query = dbManager.getEm().createQuery(SELECT_BY_NOME_AND_SQUADRA_AND_RUOLO_AND_STAGIONE);
