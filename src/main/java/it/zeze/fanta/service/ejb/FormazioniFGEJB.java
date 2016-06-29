@@ -149,9 +149,9 @@ public class FormazioniFGEJB implements FormazioniFGLocal, FormazioniFGRemote {
 						log.info("----  giocatore fuori tit " + currentGiocatoreNome);
 						currentPlayerRuoloNode = currentSinglePlayerNode.findElementByName("span", false);
 						currentGiocatoreRuolo = currentPlayerRuoloNode.getText().toString();
-						salvaGiocatoreFormazione(idGiornata, currentGiocatoreNome, squadraIn, currentGiocatoreRuolo, currentStagione, true);
+						salvaGiocatoreFormazione(idGiornata, currentGiocatoreNome, squadraOut, currentGiocatoreRuolo, currentStagione, true);
 					}
-					// Prendo i giocatori in casa pachina
+					// Prendo i giocatori fuori casa pachina
 					listPlayersNameOutNode = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentPlayerNode, "//div[@class='out']//div[@class='namesub']");
 					for (int y = 0; y < listPlayersNameOutNode.size(); y++) {
 						currentSinglePlayerNode = listPlayersNameOutNode.get(y);
@@ -160,7 +160,7 @@ public class FormazioniFGEJB implements FormazioniFGLocal, FormazioniFGRemote {
 						log.info("----  giocatore fuori panc " + currentGiocatoreNome);
 						currentPlayerRuoloNode = currentSinglePlayerNode.findElementByName("span", false);
 						currentGiocatoreRuolo = currentPlayerRuoloNode.getText().toString();
-						salvaGiocatoreFormazione(idGiornata, currentGiocatoreNome, squadraIn, currentGiocatoreRuolo, currentStagione, false);
+						salvaGiocatoreFormazione(idGiornata, currentGiocatoreNome, squadraOut, currentGiocatoreRuolo, currentStagione, false);
 					}
 				}
 			} else {
