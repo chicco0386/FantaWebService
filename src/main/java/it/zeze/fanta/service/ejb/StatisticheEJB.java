@@ -380,13 +380,14 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 	@Override
 	public Statistiche getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
 		Statistiche toReturn = null;
+		Giornate currentGiornata = giornateEJB.getGiornataById(idGiornata);
+		int idPrevGiornata = idGiornata;
+		if (currentGiornata.getNumeroGiornata() > 1) {
+			idPrevGiornata = giornateEJB.getIdGiornata((currentGiornata.getNumeroGiornata() - 1), currentGiornata.getStagione());
+		}
 		Query query = dbManager.getEm().createQuery(SELECT_BY_ID_GIOCATORE_ID_GIORNATE);
 		query.setParameter("idGiocatore", idGiocatore);
-		if (idGiornata > 1) {
-			query.setParameter("idGiornata", idGiornata - 1);
-		} else if (idGiornata == 1) {
-			query.setParameter("idGiornata", idGiornata);
-		}
+		query.setParameter("idGiornata", idPrevGiornata);
 		try {
 			toReturn = (Statistiche) query.getSingleResult();
 		} catch (NoResultException e) {
