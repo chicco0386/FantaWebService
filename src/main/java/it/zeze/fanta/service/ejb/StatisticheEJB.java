@@ -391,7 +391,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		try {
 			toReturn = (Statistiche) query.getSingleResult();
 		} catch (NoResultException e) {
-			log.error("Nessun risultato tovato con idGiocatore [" + idGiocatore + "] e idGiornata [" + idGiornata + "]");
+			log.error("Nessun risultato tovato con idGiocatore [" + idGiocatore + "] e idGiornata [" + idPrevGiornata + "]");
 		}
 		return toReturn;
 	}
