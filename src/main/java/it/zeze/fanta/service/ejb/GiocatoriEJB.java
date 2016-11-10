@@ -172,7 +172,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 				JSONUtil.GiocatoriQuotazioni giocatoriQuot = JSONUtil.parse(json, JSONUtil.GiocatoriQuotazioni.class);
 				for (List<String> currentGiocatore : giocatoriQuot.getData()) {
 					currentRiga = currentGiocatore.get(0);
-					currentNomeGiocatore = StringUtils.substringBefore(currentRiga, "(").trim();
+					currentNomeGiocatore = StringUtils.substringBetween(currentRiga, ">", "</a>");
 					currentSquadraGiocatore = StringUtils.substringBetween(currentRiga, "(", ")").trim();
 					currentGiocatoreQuotazAttuale = currentGiocatore.get(1).trim().replace('.', ',');
 					currentGiocatoreQuotazIniziale = currentGiocatore.get(2).trim().replace('.', ',');
@@ -189,7 +189,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 				giocatoriQuot = JSONUtil.parse(json, JSONUtil.GiocatoriQuotazioni.class);
 				for (List<String> currentGiocatore : giocatoriQuot.getData()) {
 					currentRiga = currentGiocatore.get(0);
-					currentNomeGiocatore = StringUtils.substringBefore(currentRiga, "(").trim();
+					currentNomeGiocatore = StringUtils.substringBetween(currentRiga, ">", "</a>");
 					currentSquadraGiocatore = StringUtils.substringBetween(currentRiga, "(", ")").trim();
 					currentGiocatoreQuotazAttuale = currentGiocatore.get(1).trim().replace('.', ',');
 					currentGiocatoreQuotazIniziale = currentGiocatore.get(2).trim().replace('.', ',');
@@ -206,7 +206,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 				giocatoriQuot = JSONUtil.parse(json, JSONUtil.GiocatoriQuotazioni.class);
 				for (List<String> currentGiocatore : giocatoriQuot.getData()) {
 					currentRiga = currentGiocatore.get(0);
-					currentNomeGiocatore = StringUtils.substringBefore(currentRiga, "(").trim();
+					currentNomeGiocatore = StringUtils.substringBetween(currentRiga, ">", "</a>");
 					currentSquadraGiocatore = StringUtils.substringBetween(currentRiga, "(", ")").trim();
 					currentGiocatoreQuotazAttuale = currentGiocatore.get(1).trim().replace('.', ',');
 					currentGiocatoreQuotazIniziale = currentGiocatore.get(2).trim().replace('.', ',');
@@ -223,7 +223,7 @@ public class GiocatoriEJB implements GiocatoriLocal, GiocatoriRemote {
 				giocatoriQuot = JSONUtil.parse(json, JSONUtil.GiocatoriQuotazioni.class);
 				for (List<String> currentGiocatore : giocatoriQuot.getData()) {
 					currentRiga = currentGiocatore.get(0);
-					currentNomeGiocatore = StringUtils.substringBefore(currentRiga, "(").trim();
+					currentNomeGiocatore = StringUtils.substringBetween(currentRiga, ">", "</a>");
 					currentSquadraGiocatore = StringUtils.substringBetween(currentRiga, "(", ")").trim();
 					currentGiocatoreQuotazAttuale = currentGiocatore.get(1).trim().replace('.', ',');
 					currentGiocatoreQuotazIniziale = currentGiocatore.get(2).trim().replace('.', ',');
