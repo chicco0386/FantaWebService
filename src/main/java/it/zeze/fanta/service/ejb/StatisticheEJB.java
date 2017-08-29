@@ -228,7 +228,12 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		int currentEspulso;
 		int currentAmmonito;
 
-		currentNomeSquadra = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeVotiSquadra, "//table//thead//h3").get(0).getText().toString();
+		try {
+			currentNomeSquadra = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeVotiSquadra, "//table//thead//h3").get(0).getText().toString();
+		} catch (IndexOutOfBoundsException e) {
+			// Stagione 2017-18
+			currentNomeSquadra = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeVotiSquadra, "//table//thead//span[@class='txtbig']").get(0).getText().toString();
+		}
 		log.info("Squadra [" + currentNomeSquadra + "]");
 		List<TagNode> listaGiocatori = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeVotiSquadra, "//tbody/tr");
 		TagNode currentNodeVoto;
