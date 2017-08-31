@@ -227,41 +227,72 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 
 		int currentEspulso;
 		int currentAmmonito;
+		
+		boolean html201718 = false;
 
 		try {
 			currentNomeSquadra = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeVotiSquadra, "//table//thead//h3").get(0).getText().toString();
 		} catch (IndexOutOfBoundsException e) {
 			// Stagione 2017-18
 			currentNomeSquadra = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeVotiSquadra, "//table//thead//span[@class='txtbig']").get(0).getText().toString();
+			html201718 = true;
 		}
+		
 		log.info("Squadra [" + currentNomeSquadra + "]");
 		List<TagNode> listaGiocatori = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeVotiSquadra, "//tbody/tr");
 		TagNode currentNodeVoto;
 		List<TagNode> listaControlloCartellini;
 		int tdIndexVotiMI;
+		int indexNew;
 		for (TagNode currentGiocatore : listaGiocatori) {
-			tdIndexVotiMI = 10;
-			currentAmmonito = 0;
-			currentEspulso = 0;
-			currentGiocatoreNome = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[@class='pname']//a").get(0).getText().toString();
-			currentGiocatoreRuolo = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromElement(currentGiocatore, "//span[contains(@class,'role')]").get(0).getText().toString();
-			currentNodeVoto = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0);
-			listaControlloCartellini = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromElement(currentGiocatore, "//span[contains(@class,'trn-rr')]");
-			if (listaControlloCartellini == null || !listaControlloCartellini.isEmpty()) {
-				currentEspulso = currentEspulso + 1;
+			if (!html201718) {
+				tdIndexVotiMI = 10;
+				currentAmmonito = 0;
+				currentEspulso = 0;
+				currentGiocatoreNome = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[@class='pname']//a").get(0).getText().toString();
+				currentGiocatoreRuolo = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromElement(currentGiocatore, "//span[contains(@class,'role')]").get(0).getText().toString();
+				currentNodeVoto = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0);
+				listaControlloCartellini = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromElement(currentGiocatore, "//span[contains(@class,'trn-rr')]");
+				if (listaControlloCartellini == null || !listaControlloCartellini.isEmpty()) {
+					currentEspulso = currentEspulso + 1;
+				}
+				listaControlloCartellini = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromElement(currentGiocatore, "//span[contains(@class,'trn-ry')]");
+				if (listaControlloCartellini == null || !listaControlloCartellini.isEmpty()) {
+					currentAmmonito = currentAmmonito + 1;
+				}
+				mediaVotoString = currentNodeVoto.getText().toString();
+				currentGoalFattoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
+				currentGoalSuRigoreString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
+				currentGoalSubitoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
+				currentRigoreParatoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
+				currentRigoreSbagliatoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
+				currentAutoreteString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
+				currentAssistString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
+			} else {
+				// New HTML from 2017-18
+				currentAmmonito = 0;
+				currentEspulso = 0;
+				currentGiocatoreNome = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[@class='pname']//a").get(0).getText().toString();
+				currentGiocatoreRuolo = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromElement(currentGiocatore, "//span[contains(@class,'role')]").get(0).getText().toString();
+				currentNodeVoto = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[@class='rel'][2]").get(0);
+				listaControlloCartellini = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromElement(currentGiocatore, "//span[contains(@class,'trn-rr')]");
+				if (listaControlloCartellini == null || !listaControlloCartellini.isEmpty()) {
+					currentEspulso = currentEspulso + 1;
+				}
+				listaControlloCartellini = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromElement(currentGiocatore, "//span[contains(@class,'trn-ry')]");
+				if (listaControlloCartellini == null || !listaControlloCartellini.isEmpty()) {
+					currentAmmonito = currentAmmonito + 1;
+				}
+				mediaVotoString = currentNodeVoto.getText().toString();
+				indexNew = 9;
+				currentGoalFattoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
+				currentGoalSuRigoreString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
+				currentGoalSubitoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
+				currentRigoreParatoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
+				currentRigoreSbagliatoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
+				currentAutoreteString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
+				currentAssistString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
 			}
-			listaControlloCartellini = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromElement(currentGiocatore, "//span[contains(@class,'trn-ry')]");
-			if (listaControlloCartellini == null || !listaControlloCartellini.isEmpty()) {
-				currentAmmonito = currentAmmonito + 1;
-			}
-			mediaVotoString = currentNodeVoto.getText().toString();
-			currentGoalFattoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
-			currentGoalSuRigoreString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
-			currentGoalSubitoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
-			currentRigoreParatoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
-			currentRigoreSbagliatoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
-			currentAutoreteString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
-			currentAssistString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + tdIndexVotiMI++ + "]").get(0).getText().toString();
 
 			if (!currentGiocatoreRuolo.equalsIgnoreCase("ALL")) {
 				saveVotoFromHtmlFile(idGiornata, currentStagione, currentGiocatoreNome, currentNomeSquadra, currentGiocatoreRuolo, currentAmmonito, currentEspulso, currentAssistString, currentAutoreteString, currentGoalFattoString, currentGoalSuRigoreString, currentGoalSubitoString, mediaVotoString, currentRigoreParatoString, currentRigoreSbagliatoString);
