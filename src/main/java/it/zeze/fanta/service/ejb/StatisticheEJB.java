@@ -43,25 +43,25 @@ import it.zeze.util.Constants;
 @Stateless
 @LocalBean
 public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
-	
+
 	private static final Logger log = LogManager.getLogger(StatisticheEJB.class);
-	
+
 	private static final String EJBQL = "select statistiche from Statistiche statistiche";
 	private static final String SELECT_BY_ID_GIOCATORE_ID_GIORNATE = "select statistiche from Statistiche statistiche where statistiche.id.idGiocatore=:idGiocatore and statistiche.id.idGiornata=:idGiornata";
 	private static final String SELECT_BY_ID_GIOCATORE_STAGIONE = "select statistiche from Statistiche statistiche, Giornate gior where statistiche.id.idGiocatore=:idGiocatore and statistiche.id.idGiornata=gior.id AND gior.stagione = :stagione";
 	private static final String SELECT_BY_ID_GIOCATORE = "select statistiche from Statistiche statistiche where statistiche.id.idGiocatore=:idGiocatore";
 	private static final String SELECT_COUNT_BY_ID_GIORNATA = "select count(statistiche.id.idGiornata) from Statistiche statistiche where statistiche.id.idGiornata=:idGiornata";
-	
+
 	@EJB(name = "DBManager")
 	private DBManager dbManager;
-	
-	@EJB(name="SquadreEJB")
+
+	@EJB(name = "SquadreEJB")
 	private SquadreLocal squadreEJB;
-	
-	@EJB(name="GiornateEJB")
+
+	@EJB(name = "GiornateEJB")
 	private GiornateLocal giornateEJB;
-	
-	@EJB(name="GiocatoriEJB")
+
+	@EJB(name = "GiocatoriEJB")
 	private GiocatoriLocal giocatoriEJB;
 
 	@Override
@@ -105,7 +105,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		}
 		log.info("unmarshallAndSaveFromHtmlFile, uscito");
 	}
-	
+
 	private String createNomeFileGiornata(String nomeFile, String numGiornata) {
 		String fileGiornataToReturn = "";
 		fileGiornataToReturn = StringUtils.replace(nomeFile, Constants.STRING_TO_REPLACE_NOME_FILE_GIORNATE, numGiornata);
@@ -120,7 +120,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 				// Vecchio HTML
 				log.info("Elaboro statistiche della giornata [" + numGiornata + "] della stagione [" + stagione + "]");
 				List<TagNode> listaTabelleVotiPerSquadra = HtmlCleanerUtil.getListOfElementsByXPathFromFile(fileGiornata.getAbsolutePath(), "//div[@id='allvotes']");
-				if (listaTabelleVotiPerSquadra == null || listaTabelleVotiPerSquadra.isEmpty()){
+				if (listaTabelleVotiPerSquadra == null || listaTabelleVotiPerSquadra.isEmpty()) {
 					throw new Exception("Rilancio per fare parsing con nuovo HTML");
 				}
 				TagNode currentNodeSquadra;
@@ -202,7 +202,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 			log.info("Statistiche della giornata [" + numGiornata + "] gia' inserite");
 		}
 	}
-	
+
 	private void unmarshallAndSaveFromHtmlFileNEW(File fileGiornata, String numGiornata, String stagione) throws IOException, XPatherException, XPathExpressionException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
 		int idGiornata = giornateEJB.getIdGiornata(Integer.valueOf(numGiornata), stagione);
 		log.info("Elaboro statistiche della giornata [" + numGiornata + "] della stagione [" + stagione + "]");
@@ -227,7 +227,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 
 		int currentEspulso;
 		int currentAmmonito;
-		
+
 		boolean html201718 = false;
 
 		try {
@@ -237,13 +237,14 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 			currentNomeSquadra = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeVotiSquadra, "//table//thead//span[@class='txtbig']").get(0).getText().toString();
 			html201718 = true;
 		}
-		
+
 		log.info("Squadra [" + currentNomeSquadra + "]");
 		List<TagNode> listaGiocatori = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentNodeVotiSquadra, "//tbody/tr");
 		TagNode currentNodeVoto;
 		List<TagNode> listaControlloCartellini;
 		int tdIndexVotiMI;
 		int indexNew;
+		List<TagNode> listCurrentChild;
 		for (TagNode currentGiocatore : listaGiocatori) {
 			if (!html201718) {
 				tdIndexVotiMI = 10;
@@ -291,7 +292,21 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 				currentRigoreParatoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
 				currentRigoreSbagliatoString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
 				currentAutoreteString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
-				currentAssistString = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]").get(0).getText().toString();
+				List<TagNode> assistNode = HtmlCleanerUtil.getListOfElementsByXPathFromElement(currentGiocatore, "//td[" + indexNew++ + "]");
+				List<TagNode> listTotAssist = HtmlCleanerUtil.getListOfElementsByXPathFromElement(assistNode.get(0), "/span");
+				if (listTotAssist != null && !listTotAssist.isEmpty()) {
+					TagNode totAssit = listTotAssist.get(0);
+					// Elimino assist da fermo, numero apice al totale assit
+					if (totAssit.hasChildren()) {
+						listCurrentChild = totAssit.getChildTagList();
+						for (TagNode current : listCurrentChild){
+							totAssit.removeChild(current);
+						}
+					}
+					currentAssistString = totAssit.getText().toString();
+				} else {
+					currentAssistString = assistNode.get(0).getText().toString();
+				}
 			}
 
 			if (!currentGiocatoreRuolo.equalsIgnoreCase("ALL")) {
@@ -300,7 +315,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 
 		}
 	}
-	
+
 	private void saveVotoFromHtmlFile(int idGiornata, String currentStagione, String currentGiocatoreNome, String currentNomeSquadra, String currentGiocatoreRuolo, int currentAmmonito, int currentEspulso, String currentAssist, String currentAutorete, String currentGoalFatto, String currentGoalSuRigore, String currentGoalSubito, String currentMediaVoto, String currentRigoreParato, String currentRigoreSbagliato) {
 		// Recupero il giocatore relativo su DB
 		boolean noLike = true;
@@ -357,27 +372,27 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 			giocatoriEJB.insertOrUpdateGiocatore(currentNomeSquadra, currentGiocatoreNome, currentGiocatoreRuolo, currentStagione, noLike);
 			currentGiocatoreDB = giocatoriEJB.getGiocatoreByNomeSquadraRuolo(currentGiocatoreNome, currentNomeSquadra, currentGiocatoreRuolo, currentStagione, noLike);
 		}
-		if (currentGiocatoreDB != null){
-		log.info("Inserisco statistiche giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "]");
-		StatisticheId statisticheId = new StatisticheId();
-		statisticheId.setIdGiocatore(currentGiocatoreDB.getId());
-		statisticheId.setIdGiornata(idGiornata);
-		statisticheId.setAmmonizioni(ammonito);
-		statisticheId.setEspulsioni(espulso);
-		statisticheId.setAssist(assist);
-		statisticheId.setAutoreti(autorete);
-		statisticheId.setGoalFatti(goalFatto);
-		statisticheId.setGoalRigore(goalSuRigore);
-		statisticheId.setGoalSubiti(goalSubito);
-		statisticheId.setMediaVoto(mediaVoto);
-		BigDecimal currentMediaFantaVoto = calcolaFantaVoto(mediaVoto, ammonito, espulso, assist, autorete, goalFatto, goalSuRigore, rigoreSbagliato, goalSubito, rigoreParato);
-		statisticheId.setMediaVotoFm(currentMediaFantaVoto);
-		statisticheId.setRigoriParati(rigoreParato);
-		statisticheId.setRigoriSbagliati(rigoreSbagliato);
+		if (currentGiocatoreDB != null) {
+			log.info("Inserisco statistiche giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "]");
+			StatisticheId statisticheId = new StatisticheId();
+			statisticheId.setIdGiocatore(currentGiocatoreDB.getId());
+			statisticheId.setIdGiornata(idGiornata);
+			statisticheId.setAmmonizioni(ammonito);
+			statisticheId.setEspulsioni(espulso);
+			statisticheId.setAssist(assist);
+			statisticheId.setAutoreti(autorete);
+			statisticheId.setGoalFatti(goalFatto);
+			statisticheId.setGoalRigore(goalSuRigore);
+			statisticheId.setGoalSubiti(goalSubito);
+			statisticheId.setMediaVoto(mediaVoto);
+			BigDecimal currentMediaFantaVoto = calcolaFantaVoto(mediaVoto, ammonito, espulso, assist, autorete, goalFatto, goalSuRigore, rigoreSbagliato, goalSubito, rigoreParato);
+			statisticheId.setMediaVotoFm(currentMediaFantaVoto);
+			statisticheId.setRigoriParati(rigoreParato);
+			statisticheId.setRigoriSbagliati(rigoreSbagliato);
 
-		Statistiche statisticheToInsert = new Statistiche();
-		statisticheToInsert.setId(statisticheId);
-		dbManager.persist(statisticheToInsert);
+			Statistiche statisticheToInsert = new Statistiche();
+			statisticheToInsert.setId(statisticheId);
+			dbManager.persist(statisticheToInsert);
 		} else {
 			log.error("******* ERRORE durante l'inserimento del giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "] *******");
 		}
@@ -468,7 +483,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		}
 		return giaInserita;
 	}
-	
+
 	@Override
 	public List<Statistiche> initResultList(Giornate giornate, Giocatori giocatori, String orderColumn, String orderDir) {
 		log.info("initResultList");
@@ -533,7 +548,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		log.info("Statistiche [" + toReturn.size() + "]");
 		return toReturn;
 	}
-	
+
 	@Override
 	public List<Statistiche> resetResumeStatistiche(List<Statistiche> resultList, Giornate giornate, Giocatori giocatori, String orderColumn, String orderDir) {
 		log.info("getResumeStatistiche");
