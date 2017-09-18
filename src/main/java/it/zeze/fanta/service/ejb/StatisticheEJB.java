@@ -299,7 +299,7 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 					// Elimino assist da fermo, numero apice al totale assit
 					if (totAssit.hasChildren()) {
 						listCurrentChild = totAssit.getChildTagList();
-						for (TagNode current : listCurrentChild){
+						for (TagNode current : listCurrentChild) {
 							totAssit.removeChild(current);
 						}
 					}
@@ -330,71 +330,73 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		int autorete;
 		int assist;
 		BigDecimal mediaVoto;
-		mediaVoto = new BigDecimal(currentMediaVoto.replace(",", "."));
-		if (currentGoalFatto.contains("-")) {
-			goalFatto = 0;
-		} else {
-			goalFatto = Integer.parseInt(currentGoalFatto);
-		}
-		if (currentGoalSuRigore.contains("-")) {
-			goalSuRigore = 0;
-		} else {
-			goalSuRigore = Integer.parseInt(currentGoalSuRigore);
-		}
-		if (currentGoalSubito.contains("-")) {
-			goalSubito = 0;
-		} else {
-			goalSubito = Integer.parseInt(currentGoalSubito);
-		}
-		if (currentRigoreParato.contains("-")) {
-			rigoreParato = 0;
-		} else {
-			rigoreParato = Integer.parseInt(currentRigoreParato);
-		}
-		if (currentRigoreSbagliato.contains("-")) {
-			rigoreSbagliato = 0;
-		} else {
-			rigoreSbagliato = Integer.parseInt(currentRigoreSbagliato);
-		}
-		if (currentAutorete.contains("-")) {
-			autorete = 0;
-		} else {
-			autorete = Integer.parseInt(currentAutorete);
-		}
-		if (currentAssist.contains("-")) {
-			assist = 0;
-		} else {
-			assist = Integer.parseInt(currentAssist);
-		}
+		if (currentMediaVoto != null && !currentMediaVoto.equalsIgnoreCase("-")) {
+			mediaVoto = new BigDecimal(currentMediaVoto.replace(",", "."));
+			if (currentGoalFatto.contains("-")) {
+				goalFatto = 0;
+			} else {
+				goalFatto = Integer.parseInt(currentGoalFatto);
+			}
+			if (currentGoalSuRigore.contains("-")) {
+				goalSuRigore = 0;
+			} else {
+				goalSuRigore = Integer.parseInt(currentGoalSuRigore);
+			}
+			if (currentGoalSubito.contains("-")) {
+				goalSubito = 0;
+			} else {
+				goalSubito = Integer.parseInt(currentGoalSubito);
+			}
+			if (currentRigoreParato.contains("-")) {
+				rigoreParato = 0;
+			} else {
+				rigoreParato = Integer.parseInt(currentRigoreParato);
+			}
+			if (currentRigoreSbagliato.contains("-")) {
+				rigoreSbagliato = 0;
+			} else {
+				rigoreSbagliato = Integer.parseInt(currentRigoreSbagliato);
+			}
+			if (currentAutorete.contains("-")) {
+				autorete = 0;
+			} else {
+				autorete = Integer.parseInt(currentAutorete);
+			}
+			if (currentAssist.contains("-")) {
+				assist = 0;
+			} else {
+				assist = Integer.parseInt(currentAssist);
+			}
 
-		if (currentGiocatoreDB == null) {
-			log.warn("Giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "] NON presente nel DB. Procedo con il suo inserimento");
-			giocatoriEJB.insertOrUpdateGiocatore(currentNomeSquadra, currentGiocatoreNome, currentGiocatoreRuolo, currentStagione, noLike);
-			currentGiocatoreDB = giocatoriEJB.getGiocatoreByNomeSquadraRuolo(currentGiocatoreNome, currentNomeSquadra, currentGiocatoreRuolo, currentStagione, noLike);
-		}
-		if (currentGiocatoreDB != null) {
-			log.info("Inserisco statistiche giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "]");
-			StatisticheId statisticheId = new StatisticheId();
-			statisticheId.setIdGiocatore(currentGiocatoreDB.getId());
-			statisticheId.setIdGiornata(idGiornata);
-			statisticheId.setAmmonizioni(ammonito);
-			statisticheId.setEspulsioni(espulso);
-			statisticheId.setAssist(assist);
-			statisticheId.setAutoreti(autorete);
-			statisticheId.setGoalFatti(goalFatto);
-			statisticheId.setGoalRigore(goalSuRigore);
-			statisticheId.setGoalSubiti(goalSubito);
-			statisticheId.setMediaVoto(mediaVoto);
-			BigDecimal currentMediaFantaVoto = calcolaFantaVoto(mediaVoto, ammonito, espulso, assist, autorete, goalFatto, goalSuRigore, rigoreSbagliato, goalSubito, rigoreParato);
-			statisticheId.setMediaVotoFm(currentMediaFantaVoto);
-			statisticheId.setRigoriParati(rigoreParato);
-			statisticheId.setRigoriSbagliati(rigoreSbagliato);
+			if (currentGiocatoreDB == null) {
+				log.warn("Giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "] NON presente nel DB. Procedo con il suo inserimento");
+				giocatoriEJB.insertOrUpdateGiocatore(currentNomeSquadra, currentGiocatoreNome, currentGiocatoreRuolo, currentStagione, noLike);
+				currentGiocatoreDB = giocatoriEJB.getGiocatoreByNomeSquadraRuolo(currentGiocatoreNome, currentNomeSquadra, currentGiocatoreRuolo, currentStagione, noLike);
+			}
+			if (currentGiocatoreDB != null) {
+				log.info("Inserisco statistiche giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "]");
+				StatisticheId statisticheId = new StatisticheId();
+				statisticheId.setIdGiocatore(currentGiocatoreDB.getId());
+				statisticheId.setIdGiornata(idGiornata);
+				statisticheId.setAmmonizioni(ammonito);
+				statisticheId.setEspulsioni(espulso);
+				statisticheId.setAssist(assist);
+				statisticheId.setAutoreti(autorete);
+				statisticheId.setGoalFatti(goalFatto);
+				statisticheId.setGoalRigore(goalSuRigore);
+				statisticheId.setGoalSubiti(goalSubito);
+				statisticheId.setMediaVoto(mediaVoto);
+				BigDecimal currentMediaFantaVoto = calcolaFantaVoto(mediaVoto, ammonito, espulso, assist, autorete, goalFatto, goalSuRigore, rigoreSbagliato, goalSubito, rigoreParato);
+				statisticheId.setMediaVotoFm(currentMediaFantaVoto);
+				statisticheId.setRigoriParati(rigoreParato);
+				statisticheId.setRigoriSbagliati(rigoreSbagliato);
 
-			Statistiche statisticheToInsert = new Statistiche();
-			statisticheToInsert.setId(statisticheId);
-			dbManager.persist(statisticheToInsert);
-		} else {
-			log.error("******* ERRORE durante l'inserimento del giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "] *******");
+				Statistiche statisticheToInsert = new Statistiche();
+				statisticheToInsert.setId(statisticheId);
+				dbManager.persist(statisticheToInsert);
+			} else {
+				log.error("******* ERRORE durante l'inserimento del giocatore [" + currentGiocatoreNome + "] [" + currentNomeSquadra + "] [" + currentGiocatoreRuolo + "] *******");
+			}
 		}
 	}
 
