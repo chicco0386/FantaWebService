@@ -207,6 +207,10 @@ public class StatisticheEJB implements StatisticheLocal, StatisticheRemote {
 		int idGiornata = giornateEJB.getIdGiornata(Integer.valueOf(numGiornata), stagione);
 		log.info("Elaboro statistiche della giornata [" + numGiornata + "] della stagione [" + stagione + "]");
 		List<TagNode> listTabelleSquadre = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromFile(fileGiornata.getAbsolutePath(), "//div[contains(@class,'tbvoti')]//table");
+		if (listTabelleSquadre == null || listTabelleSquadre.isEmpty()){
+			// After migrate removing Selenium
+			listTabelleSquadre = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromFile(fileGiornata.getAbsolutePath(), "//div/table");
+		}
 		for (TagNode currentNodeVotiSquadra : listTabelleSquadre) {
 			salvaVotiSquadraHtmlNEW(idGiornata, stagione, currentNodeVotiSquadra);
 		}
