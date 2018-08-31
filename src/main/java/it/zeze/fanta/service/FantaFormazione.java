@@ -1,7 +1,5 @@
 package it.zeze.fanta.service;
 
-import it.zeze.fantaformazioneweb.entity.Giornate;
-
 import javax.ejb.Stateless;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -23,7 +21,7 @@ public class FantaFormazione {
 
 	@GET
 	@Path("/giornate")
-	public Giornate getGiornata() throws NamingException {
-		return (Giornate) em.createQuery("SELECT g FROM Giornate g").getResultList().get(0);
+	public Object getGiornata() throws NamingException {
+		return em.createNativeQuery("SELECT * FROM giornate").getResultList();
 	}
 }
