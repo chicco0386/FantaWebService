@@ -66,7 +66,6 @@ public class FormazioniGazzettaEJB implements FormazioniGazzettaLocal, Formazion
 		String rootHTMLFiles = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_ROOT);
 		String nomeFileFormazioneGazzetta = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_FILE_PROB_FORMAZIONI_GAZZETTA);
 		String filtroFile = StringUtils.substringBefore(nomeFileFormazioneGazzetta, "{giornata}");
-		filtroFile = StringUtils.substringAfter(filtroFile, "/");
 		Collection<File> collFiles = FileUtils.listFiles(new File(rootHTMLFiles), FileFilterUtils.prefixFileFilter(filtroFile), FileFilterUtils.falseFileFilter());
 		List<File> listFile = new ArrayList<File>(collFiles);
 		Collections.sort(listFile, new FileFormazioneGazzettaComparator());

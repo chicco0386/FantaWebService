@@ -69,7 +69,6 @@ public class FormazioniFGEJB implements FormazioniFGLocal, FormazioniFGRemote {
 		String rootHTMLFiles = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_ROOT);
 		String nomeFileFormazioneFG = ConfigurationUtil.getValue(Constants.CONF_KEY_HTML_FILE_PROB_FORMAZIONI_FG);
 		String filtroFile = StringUtils.substringBefore(nomeFileFormazioneFG, "{giornata}");
-		filtroFile = StringUtils.substringAfter(filtroFile, "/");
 		Collection<File> collFiles = FileUtils.listFiles(new File(rootHTMLFiles), FileFilterUtils.prefixFileFilter(filtroFile), FileFilterUtils.falseFileFilter());
 		List<File> listFile = new ArrayList<File>(collFiles);
 		Collections.sort(listFile, new FileFormazioneFGComparator());
