@@ -58,7 +58,7 @@ public class SquadreEJB implements SquadreLocal, SquadreRemote {
 			listNodeSquadre = HtmlCleanerUtil.getListOfElementsByXPathFromFile(pathCompletoFileSquadre, "//div[@class='content']/table/tbody/tr/td[@class='a-left']/a");
 			if (listNodeSquadre == null || listNodeSquadre.isEmpty()) {
 				// Leggo squadre nuovo HTML
-				listNodeSquadre = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromFile(pathCompletoFileSquadre, "//table[@id='DataTables_Table_0']/tbody/tr/td/a/span[contains(@class,'nteam')][1]");
+				listNodeSquadre = HtmlCleanerUtil.getListOfElementsByXPathSpecialFromFile(pathCompletoFileSquadre, "//table/tbody/tr/td/a/span[contains(@class,'nteam')][1]");
 			}
 			TagNode currentNodeSquadra;
 			String nomeSquadra;
