@@ -1,8 +1,9 @@
 package it.zeze.fanta.service;
 
+import org.glassfish.jersey.server.ResourceConfig;
+
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 
 @ApplicationPath("/")
-public class ApplicationPathFantaWebService extends Application {
+public class ApplicationPathFantaWebService extends ResourceConfig {
 }

@@ -24,6 +24,50 @@
 					<warName>FantaWebService</warName>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources-as</id>
+						<!-- here the phase you need -->
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>/home/enrico/Scrivania/ZeZe/jboss-as-7.1.1.Final/standalone/deployments</outputDirectory>
+							<resources>
+								<resource>
+									<directory>target</directory>
+									<includes>
+										<include>FantaWebService.war</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-resources-eap</id>
+						<!-- here the phase you need -->
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>/home/enrico/Scrivania/ZeZe/jboss-eap-6.1/standalone/deployments</outputDirectory>
+							<resources>
+								<resource>
+									<directory>target</directory>
+									<includes>
+										<include>FantaWebService.war</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -37,13 +81,13 @@
 			<groupId>it.zeze</groupId>
 			<artifactId>FantaFormazioneCommon</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>provided</scope>
+			<!--<scope>provided</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>it.zeze</groupId>
 			<artifactId>FantaFormazione</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>provided</scope>
+			<!--<scope>provided</scope>-->
 		</dependency>
 	</dependencies>
 </project>
