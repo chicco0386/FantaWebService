@@ -1,35 +1,27 @@
 package it.zeze.fanta.service.rest;
 
-import java.util.List;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.naming.NamingException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
 import it.zeze.fanta.ejb.util.JNDIUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-import it.zeze.fanta.service.definition.StatisticheInterface;
-import it.zeze.fanta.service.definition.ejb.StatisticheLocal;
+import it.zeze.fanta.service.definition.ejb.proxy.seam.StatisticheSeamRemote;
 import it.zeze.fantaformazioneweb.entity.Giocatori;
 import it.zeze.fantaformazioneweb.entity.Giornate;
 import it.zeze.fantaformazioneweb.entity.Statistiche;
+import it.zeze.fantaformazioneweb.entity.wrapper.StatisticheWrap;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import javax.naming.NamingException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/statisticheRESTImpl")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class StatisticheRESTImpl implements StatisticheInterface {
+public class StatisticheRESTImpl implements StatisticheSeamRemote {
 
 	private static final Logger logger = LogManager.getLogger(StatisticheRESTImpl.class);
 
-	private StatisticheLocal statisticheEJB;
+	private StatisticheSeamRemote statisticheEJB;
 
 	{
 		try {
@@ -47,20 +39,25 @@ public class StatisticheRESTImpl implements StatisticheInterface {
 	}
 
 	@Override
-	public Statistiche getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
+	public StatisticheWrap getStatisticheIdGiocatoreIdGiornata(int idGiocatore, int idGiornata) {
 		return statisticheEJB.getStatisticheIdGiocatoreIdGiornata(idGiocatore, idGiornata);
 	}
 
 	@Override
-	public List<Statistiche> initResultList(Giornate giornate, Giocatori giocatori, String orderColumn, String orderDir) {
-		// TODO Auto-generated method stub
+	public List<StatisticheWrap> initResultList(Giornate giornate, Giocatori giocatori, String orderColumn, String orderDir) {
 		return null;
 	}
 
 	@Override
-	public List<Statistiche> resetResumeStatistiche(List<Statistiche> resultList, Giornate giornate, Giocatori giocatori, String orderColumn, String orderDir) {
-		// TODO Auto-generated method stub
+	public List<StatisticheWrap> resetResumeStatistiche(List<Statistiche> resultList, Giornate giornate, Giocatori giocatori, String orderColumn, String orderDir) {
 		return null;
+	}
+
+	@Override
+	@GET
+	@Path("/downloadFromSite")
+	public void downloadFromSite() {
+		statisticheEJB.downloadFromSite();
 	}
 
 }

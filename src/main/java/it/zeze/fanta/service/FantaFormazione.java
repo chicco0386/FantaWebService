@@ -2,9 +2,8 @@ package it.zeze.fanta.service;
 
 import it.zeze.fanta.ejb.util.JNDIUtils;
 import it.zeze.fanta.service.definition.ejb.proxy.seam.CalendarioSeamRemote;
+import it.zeze.fanta.service.definition.ejb.proxy.seam.StatisticheSeamRemote;
 import it.zeze.fantaformazioneweb.entity.wrapper.GiornateWrap;
-import it.zeze.util.FantaFormazioneUtil;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -48,14 +47,5 @@ public class FantaFormazione {
             e.printStackTrace();
         }
         return calendario;
-    }
-
-    @GET
-    @Path("/statisticheDownload")
-    public void statisticheDownload() throws Exception {
-        String rootHTMLFiles = "/home/enrico/Desktop/";
-        String nomeFileSquadre = "statisticheG{giornata}.html";
-        String pathFileHTMLStatistiche = FilenameUtils.concat(rootHTMLFiles, nomeFileSquadre);
-        FantaFormazioneUtil.salvaStatistichePerTutteLeGiornateNew(pathFileHTMLStatistiche);
     }
 }
