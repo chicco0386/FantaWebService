@@ -36,7 +36,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>/home/enrico/Scrivania/ZeZe/jboss-as-7.1.1.Final/standalone/deployments</outputDirectory>
+							<outputDirectory>/home/enrico/Desktop/ZeZe/jboss-as-7.1.1.Final/standalone/deployments</outputDirectory>
 							<resources>
 								<resource>
 									<directory>target</directory>
@@ -55,7 +55,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>/home/enrico/Scrivania/ZeZe/jboss-eap-6.1/standalone/deployments</outputDirectory>
+							<outputDirectory>/home/enrico/Desktop/ZeZe/jboss-eap-6.1/standalone/deployments</outputDirectory>
 							<resources>
 								<resource>
 									<directory>target</directory>
